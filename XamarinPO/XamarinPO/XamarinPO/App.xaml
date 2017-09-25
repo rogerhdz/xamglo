@@ -1,10 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:infra="clr-namespace:XamarinPO.Insfrastructure;assembly=XamarinPO"
              x:Class="XamarinPO.App">
-	<Application.Resources>
-
-		<!-- Application resource dictionary -->
-
-	</Application.Resources>
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- General Color -->
+            <Color x:Key="MainColor">#012D41</Color>
+            <Color x:Key="FontColor">#1CA5B8</Color>
+            <Color x:Key="AccentColor1">#FF404E</Color>
+            <Color x:Key="AccentColor2">#1BA5B8</Color>
+            <Color x:Key="BackgroundColor">#DAECF3</Color>
+            <!-- Menu Color -->
+            <Color x:Key="MenuColor">#FF404E</Color>
+            <Color x:Key="MenuFontColor">#FF404E</Color>
+            <!-- Locator -->
+            <infra:InstanceLocator x:Key="Locator"></infra:InstanceLocator>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

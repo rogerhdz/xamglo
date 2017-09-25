@@ -4,16 +4,19 @@ using System.Linq;
 using System.Text;
 
 using Xamarin.Forms;
+using XamarinPO.Views.Navigation;
 
 namespace XamarinPO
 {
     public partial class App : Application
     {
+        public static NavigationPage Navigator { get; internal set; }
+
         public App()
         {
             InitializeComponent();
 
-            MainPage = new XamarinPO.MainPage();
+            MainPage = new MasterPage();
         }
 
         protected override void OnStart()
