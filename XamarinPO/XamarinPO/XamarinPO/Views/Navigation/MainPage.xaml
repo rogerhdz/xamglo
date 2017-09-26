@@ -2,11 +2,42 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="XamarinPO.Views.Navigation.MainPage"
-             BackgroundColor="{StaticResource BackgroundColor}">
-    <Label Text="Main" 
-        TextColor="{StaticResource FontColor}"
-        VerticalOptions="Center"
-        HorizontalOptions="Center"
-    />
+             BackgroundColor="{StaticResource BackgroundColor}"
+             Title="My Orders"
+             BindingContext="{Binding Main, Source={StaticResource Locator}}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="ic_action_add"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <ListView HasUnevenRows="True" ItemsSource="{Binding Orders}">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Image WidthRequest="80" HeightRequest="80" VerticalOptions="Start" Source="ic_detail_order"></Image>
+                        <StackLayout Grid.Column="1">
+                            <Label
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                TextColor="{StaticResource FontColor}"
+                                Text="{Binding Title}"></Label>
+                            <Label
+                                VerticalOptions="Center"
+                                TextColor="{StaticResource FontColor}"
+                                Text="{Binding Description}"></Label>
+                            <Label
+                                VerticalOptions="Center"
+                                TextColor="{StaticResource AccentColor1}"
+                                Text="{Binding DeliveryDate, StringFormat='yyyy/MM/dd'}"></Label>
+                        </StackLayout>
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+
+    </ListView>
 
 </ContentPage>
