@@ -45,6 +45,7 @@
     <Compile Include="ViewModel\Order\NewOrderPage.xaml.cs">
       <DependentUpon>NewOrderPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\Order\OrderViewModel.cs" />
     <Compile Include="Views\Navigation\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
