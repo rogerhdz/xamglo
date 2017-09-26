@@ -13,7 +13,7 @@
             <Color x:Key="BackgroundColor">#DAECF3</Color>
             <!-- Menu Color -->
             <Color x:Key="MenuColor">#FF404E</Color>
-            <Color x:Key="MenuFontColor">#FF404E</Color>
+            <Color x:Key="MenuFontColor">#FFF</Color>
             <!-- Locator -->
             <infra:InstanceLocator x:Key="Locator"></infra:InstanceLocator>
         </ResourceDictionary>

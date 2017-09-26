@@ -7,11 +7,6 @@
              BindingContext="{Binding Main, Source={StaticResource Locator}}">
 
     <StackLayout Orientation="Vertical">
-
-        <!-- 
-             This StackLayout you can use for other
-             data that you want to have in your menu drawer
-        -->
         <StackLayout BackgroundColor="{StaticResource MenuColor}"
                      HeightRequest="75">
 
@@ -30,9 +25,13 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" ></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="150"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <Label Text="{Binding Title}" TextColor="{StaticResource MenuFontColor}"></Label>
+                            <Image
+                                WidthRequest="50"
+                                HeightRequest="50"
+                                Source="{Binding Icon}"></Image>
+                            <Label Grid.Column="1" VerticalOptions="Center" Text="{Binding Title}" TextColor="{StaticResource MenuFontColor}"></Label>
                         </Grid>
                     </ViewCell>
                 </DataTemplate>
