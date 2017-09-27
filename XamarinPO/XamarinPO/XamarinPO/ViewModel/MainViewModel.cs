@@ -1,57 +1,128 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
+using System.ComponentModel;
 using System.Threading.Tasks;
+using XamarinPO.Extensions;
+using XamarinPO.Helpers;
 using XamarinPO.ViewModel.Menu;
 using XamarinPO.ViewModel.Order;
 
 namespace XamarinPO.ViewModel
 {
-    public class MainViewModel
+    public class MainViewModel : INotifyPropertyChanged
     {
+        #region Events
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+
+        #region Attributes
+        bool _isRunning;
+        string _result;
+        #endregion
+
+        #region Properties
         public ObservableCollection<MenuItemViewModel> Menu { get; set; }
         public ObservableCollection<OrderViewModel> Orders { get; set; }
+
+        public bool IsRunning
+        {
+            get => _isRunning;
+            set
+            {
+                if (_isRunning == IsRunning) return;
+                _isRunning = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsRunning)));
+            }
+        }
+        public string Result
+        {
+            get => _result;
+            set
+            {
+                if (_result == Result) return;
+                _result = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Result)));
+            }
+        }
+        #endregion 
+
         public MainViewModel()
         {
             LoadMenu();
             LoadOrders();
         }
 
-        private void LoadOrders()
+        /// <summary>
+        /// Loads the orders from API
+        /// </summary>
+        /// <returns></returns>
+        async Task LoadOrders()
         {
+            //Instance result observable list
             Orders = new ObservableCollection<OrderViewModel>();
-            for (int i = 1; i <= 10; i++)
+            IsRunning = true;
+            Result = "Cargando Resultados";
+            try
             {
-                Orders.Add(new OrderViewModel()
+                //Create configurator to know consume api
+                var config = new HttpManagerConfiguration
                 {
-                    Client = i,
-                    Description = string.Format("Description Order {0}", i),
-                    DeliveryInformation = string.Format("Delivery Information Order {0}", i),
-                    Id = 1,
-                    CreationDate = DateTime.Now.AddDays(i),
-                    DeliveryDate = DateTime.Now.AddDays(5 + i),
-                    Title = string.Format("Order's Title {0}", i)
-                });
+                    Method = "/Api/Order/GetOrders",
+                    Server = "http://192.168.56.1:5555"
+                };
+                //Create manager
+                var manager = new HttpManager<OrderViewModel>();
+                //Get object with items, isSuccess and message
+                HttpManagerResult<OrderViewModel> result = await manager.HttpGetList(config);
+                Result = result.Message;
+                if (result.Success)
+                {
+                    //Modify observable
+                    Orders.AddRange(result.Items);
+                }
+            }
+            catch (Exception ex)
+            {
+                Result = ex.Message;
+            }
+            finally {
+                IsRunning = false;
             }
         }
 
-        private void LoadMenu()
+        async void LoadMenu()
         {
+            //Instance result observable list
             Menu = new ObservableCollection<MenuItemViewModel>();
-            Menu.Add(new MenuItemViewModel()
+            IsRunning = true;
+            Result = "Cargando Menú";
+            try
             {
-                Icon = "ic_menu_orders",
-                Title = "Orders",
-                PageName = "NewOrder"
-            });
-            Menu.Add(new MenuItemViewModel()
+                //Create configurator to know consume api
+                var config = new HttpManagerConfiguration
+                {
+                    Method = "/Api/Menu/GetMenu",
+                    Server = "http://192.168.56.1:5555"
+                };
+                //Create manager
+                var manager = new HttpManager<MenuItemViewModel>();
+                //Get object with items, isSuccess and message
+                HttpManagerResult<MenuItemViewModel> result = await manager.HttpGetList(config);
+                Result = result.Message;
+                if (result.Success)
+                {
+                    //Modify observable
+                    Menu.AddRange(result.Items);
+                }
+            }
+            catch (Exception ex)
             {
-                Icon = "ic_menu_client",
-                Title = "Clients",
-                PageName = "Clients"
-            });
+                Result = ex.Message;
+            }
+            finally
+            {
+                IsRunning = false;
+            }
         }
     }
 }
