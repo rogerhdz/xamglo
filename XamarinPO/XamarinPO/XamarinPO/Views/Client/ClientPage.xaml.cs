@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace XamarinPO.ViewModel.Order
+namespace XamarinPO.Views.Client
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class NewOrderPage : ContentPage
+	public partial class ClientPage : ContentPage
 	{
-		public NewOrderPage ()
+		public ClientPage ()
 		{
 			InitializeComponent ();
 		}
