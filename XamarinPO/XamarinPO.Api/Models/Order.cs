@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace XamarinPO.ViewModel.Order
+namespace XamarinPO.Api.Models
 {
-    public class OrderViewModel
+    public class Order
     {
         public string Description { get; set; }
         public int Id { get; set; }
