@@ -42,12 +42,13 @@
     <Compile Include="Helpers\HttpManager.cs" />
     <Compile Include="Insfrastructure\InstanceLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\NavigationService.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\Menu\MenuItemViewModel.cs" />
-    <Compile Include="ViewModel\Order\NewOrderPage.xaml.cs">
-      <DependentUpon>NewOrderPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModel\Order\OrderViewModel.cs" />
+    <Compile Include="Views\Client\ClientPage.xaml.cs">
+      <DependentUpon>ClientPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Navigation\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -56,6 +57,9 @@
     </Compile>
     <Compile Include="Views\Navigation\MenuPage.xaml.cs">
       <DependentUpon>MenuPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Order\NewOrderPage.xaml.cs">
+      <DependentUpon>NewOrderPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -118,7 +122,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ViewModel\Order\NewOrderPage.xaml">
+    <EmbeddedResource Include="Views\Order\NewOrderPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\Client\ClientPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>

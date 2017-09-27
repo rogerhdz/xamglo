@@ -6,13 +6,13 @@
              Title="My Orders"
              BindingContext="{Binding Main, Source={StaticResource Locator}}">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="ic_action_add"></ToolbarItem>
+        <ToolbarItem Icon="ic_action_add" Command="{Binding GoToCommand}" CommandParameter="NewOrderPage"></ToolbarItem>
     </ContentPage.ToolbarItems>
     <ListView HasUnevenRows="True" ItemsSource="{Binding Orders}">
         <ListView.ItemTemplate>
             <DataTemplate>
                 <ViewCell>
-                    <Grid>
+                    <Grid Padding="8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -31,7 +31,7 @@
                             <Label
                                 VerticalOptions="Center"
                                 TextColor="{StaticResource AccentColor1}"
-                                Text="{Binding DeliveryDate, StringFormat='yyyy/MM/dd'}"></Label>
+                                Text="{Binding DeliveryDate, StringFormat='{0:yyyy/MM/dd}'}"></Label>
                         </StackLayout>
                     </Grid>
                 </ViewCell>

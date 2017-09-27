@@ -1,11 +1,15 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Command;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using XamarinPO.Services;
 using XamarinPO.Extensions;
 using XamarinPO.Helpers;
 using XamarinPO.ViewModel.Menu;
 using XamarinPO.ViewModel.Order;
+using XamarinPO.Views.Order;
 
 namespace XamarinPO.ViewModel
 {
@@ -23,6 +27,7 @@ namespace XamarinPO.ViewModel
         #region Properties
         public ObservableCollection<MenuItemViewModel> Menu { get; set; }
         public ObservableCollection<OrderViewModel> Orders { get; set; }
+        public NavigationService NavigationService { get; set; }
 
         public bool IsRunning
         {
@@ -48,6 +53,7 @@ namespace XamarinPO.ViewModel
 
         public MainViewModel()
         {
+            NavigationService = new NavigationService();
             LoadMenu();
             LoadOrders();
         }
@@ -124,5 +130,23 @@ namespace XamarinPO.ViewModel
                 IsRunning = false;
             }
         }
+        #endregion
+
+        #region Commands
+        public ICommand GoToCommand {
+            get
+            {
+                return new RelayCommand<string>(GoTo);
+            }
+                
+        }
+
+        private void GoTo(string PageName)
+        {
+            NavigationService.Navigate(PageName);
+        }
+
+
+        #endregion
     }
 }

@@ -9,20 +9,21 @@
     <StackLayout Orientation="Vertical">
         <StackLayout BackgroundColor="{StaticResource MenuColor}"
                      HeightRequest="75">
-
             <Label Text="Menu"
                  FontSize="20"
                  VerticalOptions="CenterAndExpand"
                  TextColor="White"
                  HorizontalOptions="Center"/>
         </StackLayout>
-
         <ListView 
         ItemsSource="{Binding Menu}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
                         <Grid>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding NavigateCommand}"></TapGestureRecognizer>
+                            </Grid.GestureRecognizers>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" ></ColumnDefinition>
                                 <ColumnDefinition Width="150"></ColumnDefinition>

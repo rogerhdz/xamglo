@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="XamarinPO.Views.Order.NewOrderPage"
+             BackgroundColor="{StaticResource BackgroundColor}"
+             Title="New Orders"
+             BindingContext="{Binding Main, Source={StaticResource Locator}}">
+    <ScrollView>
+        <StackLayout Padding="8">
+            <Label TextColor="{StaticResource FontColor}"
+                   Text="Title"></Label>
+            <Entry TextColor="{StaticResource FontColor}"
+                   BackgroundColor="{StaticResource BackgroundColor}"></Entry>
+            <Label TextColor="{StaticResource FontColor}"
+                   Text="Description"></Label>
+            <Editor TextColor="{StaticResource FontColor}"
+                   BackgroundColor="{StaticResource BackgroundColor}"></Editor>
+            <Label TextColor="{StaticResource FontColor}"
+                   Text="Delivery Date"></Label>
+            <DatePicker></DatePicker>
+            <Button
+                HeightRequest="50"
+                BorderRadius="25"
+                BackgroundColor="{StaticResource MainColor}"
+                TextColor="{StaticResource MenuFontColor}"
+                Text="Guardar"></Button>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
