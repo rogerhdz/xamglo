@@ -10,6 +10,8 @@ using XamarinPO.Helpers;
 using XamarinPO.ViewModel.Menu;
 using XamarinPO.ViewModel.Order;
 using XamarinPO.Views.Order;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace XamarinPO.ViewModel
 {
@@ -28,6 +30,7 @@ namespace XamarinPO.ViewModel
         public ObservableCollection<MenuItemViewModel> Menu { get; set; }
         public ObservableCollection<OrderViewModel> Orders { get; set; }
         public NavigationService NavigationService { get; set; }
+        public HttpManagerConfiguration ManagerConfiguration { get; set; }
 
         public bool IsRunning
         {
@@ -54,32 +57,30 @@ namespace XamarinPO.ViewModel
         public MainViewModel()
         {
             NavigationService = new NavigationService();
+            ManagerConfiguration = new HttpManagerConfiguration()
+            {
+                Server = "http://192.168.56.1:5555"
+            };
             LoadMenu();
             LoadOrders();
         }
-
+        #region Methods
         /// <summary>
         /// Loads the orders from API
         /// </summary>
         /// <returns></returns>
         async Task LoadOrders()
         {
-            //Instance result observable list
             Orders = new ObservableCollection<OrderViewModel>();
             IsRunning = true;
-            Result = "Cargando Resultados";
             try
             {
                 //Create configurator to know consume api
-                var config = new HttpManagerConfiguration
-                {
-                    Method = "/Api/Order/GetOrders",
-                    Server = "http://192.168.56.1:5555"
-                };
+                ManagerConfiguration.Method = "/Api/Order/GetOrders";
                 //Create manager
                 var manager = new HttpManager<OrderViewModel>();
                 //Get object with items, isSuccess and message
-                HttpManagerResult<OrderViewModel> result = await manager.HttpGetList(config);
+                HttpManagerResult<OrderViewModel> result = await manager.HttpGetList(ManagerConfiguration);
                 Result = result.Message;
                 if (result.Success)
                 {
@@ -91,7 +92,8 @@ namespace XamarinPO.ViewModel
             {
                 Result = ex.Message;
             }
-            finally {
+            finally
+            {
                 IsRunning = false;
             }
         }
@@ -101,19 +103,15 @@ namespace XamarinPO.ViewModel
             //Instance result observable list
             Menu = new ObservableCollection<MenuItemViewModel>();
             IsRunning = true;
-            Result = "Cargando Menú";
+
             try
             {
                 //Create configurator to know consume api
-                var config = new HttpManagerConfiguration
-                {
-                    Method = "/Api/Menu/GetMenu",
-                    Server = "http://192.168.56.1:5555"
-                };
+                ManagerConfiguration.Method = "/Api/Menu/GetMenu";
                 //Create manager
                 var manager = new HttpManager<MenuItemViewModel>();
                 //Get object with items, isSuccess and message
-                HttpManagerResult<MenuItemViewModel> result = await manager.HttpGetList(config);
+                HttpManagerResult<MenuItemViewModel> result = await manager.HttpGetList(ManagerConfiguration);
                 Result = result.Message;
                 if (result.Success)
                 {
@@ -133,12 +131,13 @@ namespace XamarinPO.ViewModel
         #endregion
 
         #region Commands
-        public ICommand GoToCommand {
+        public ICommand GoToCommand
+        {
             get
             {
                 return new RelayCommand<string>(GoTo);
             }
-                
+
         }
 
         private void GoTo(string PageName)

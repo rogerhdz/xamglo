@@ -27,7 +27,7 @@ namespace XamarinPO.Helpers
 
             result.Success = response.IsSuccessStatusCode;
             result.Items = JsonConvert.DeserializeObject<List<T>>(jsonResult);
-            result.Message = response.IsSuccessStatusCode ? "Correcto" : jsonResult;
+            result.Message = response.IsSuccessStatusCode ? "Success" : jsonResult;
             return result;
         }
     }

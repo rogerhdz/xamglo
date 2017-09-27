@@ -11,7 +11,7 @@ namespace XamarinPO.Api.Controllers
 {
     public class MenuController : ApiController
     {
-        public IEnumerable<MenuItem> GetOrders()
+        public IEnumerable<MenuItem> GetMenu()
         {
             var menu = new List<MenuItem>();
             menu.Add(new MenuItem()
@@ -24,7 +24,13 @@ namespace XamarinPO.Api.Controllers
             {
                 Icon = "ic_menu_client",
                 Title = "Clients",
-                PageName = "Clients"
+                PageName = "ClientPage"
+            });
+            menu.Add(new MenuItem()
+            {
+                Icon = "ic_menu_settings",
+                Title = "settings",
+                PageName = "SettingsPage"
             });
             return menu;
         }
