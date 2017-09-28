@@ -7,6 +7,7 @@ using System.Windows.Input;
 using XamarinPO.Services;
 using XamarinPO.Extensions;
 using XamarinPO.Helpers;
+using XamarinPO.ViewModel.Application;
 using XamarinPO.ViewModel.Menu;
 using XamarinPO.ViewModel.Order;
 using XamarinPO.Views.Order;
@@ -27,7 +28,8 @@ namespace XamarinPO.ViewModel
         #region Properties
         public ObservableCollection<MenuItemViewModel> Menu { get; set; }
         public ObservableCollection<OrderViewModel> Orders { get; set; }
-        public NavigationService NavigationService { get; set; }
+        public NavigationService NavigationService { get; }
+        public SettingsViewModel NewSettings { get; private set; }
 
         public bool IsRunning
         {
@@ -58,6 +60,7 @@ namespace XamarinPO.ViewModel
             LoadOrders();
         }
 
+        #region Methods
         /// <summary>
         /// Loads the orders from API
         /// </summary>
@@ -91,7 +94,8 @@ namespace XamarinPO.ViewModel
             {
                 Result = ex.Message;
             }
-            finally {
+            finally
+            {
                 IsRunning = false;
             }
         }
@@ -133,16 +137,25 @@ namespace XamarinPO.ViewModel
         #endregion
 
         #region Commands
-        public ICommand GoToCommand {
+        public ICommand GoToCommand
+        {
             get
             {
                 return new RelayCommand<string>(GoTo);
             }
-                
+
         }
 
         private void GoTo(string PageName)
         {
+            switch (PageName)
+            {
+                case "SettingsViewModel":
+                    NewSettings = new SettingsViewModel();
+                    break;
+                default:
+                    break;
+            }
             NavigationService.Navigate(PageName);
         }
 

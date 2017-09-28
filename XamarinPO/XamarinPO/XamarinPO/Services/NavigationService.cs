@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Xamarin.Forms;
+using XamarinPO.Views.Application;
 using XamarinPO.Views.Client;
 using XamarinPO.Views.Order;
 
@@ -20,6 +21,9 @@ namespace XamarinPO.Services
                     break;
                 case "NewOrderPage":
                     await Navigate(new NewOrderPage());
+                    break;
+                case "SettingsPage":
+                    await Navigate(new SettingsPage());
                     break;
                 default:
                     break;
