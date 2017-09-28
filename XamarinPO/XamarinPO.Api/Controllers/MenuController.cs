@@ -29,7 +29,7 @@ namespace XamarinPO.Api.Controllers
             menu.Add(new MenuItem()
             {
                 Icon = "ic_menu_settings",
-                Title = "settings",
+                Title = "Settings",
                 PageName = "SettingsPage"
             });
             return menu;
