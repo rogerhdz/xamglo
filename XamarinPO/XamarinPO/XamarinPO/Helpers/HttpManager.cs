@@ -30,6 +30,26 @@ namespace XamarinPO.Helpers
             result.Message = response.IsSuccessStatusCode ? "Success" : jsonResult;
             return result;
         }
+
+        public async Task<HttpManagerResult<T>> HttpJsonPost(HttpManagerConfiguration configuration, HttpContent content)
+        {
+            var result = new HttpManagerResult<T>();
+            try
+            {
+                var client = new HttpClient();
+                client.BaseAddress = new Uri(string.Format("{0}/{1}", configuration.Server, configuration.Method));
+                var response = await client.PostAsync(client.BaseAddress, content);
+                var Result = await response.Content.ReadAsStringAsync();
+
+                result.Success = response.IsSuccessStatusCode;
+                result.ResultObject = Result;
+                result.Message = response.IsSuccessStatusCode ? "Success" : Result;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
     }
 
     public class HttpManagerConfiguration
@@ -43,5 +63,6 @@ namespace XamarinPO.Helpers
         public List<T> Items { get; set; }
         public bool Success { get; set; }
         public string Message { get; set; }
+        public object ResultObject { get; set; }
     }
 }

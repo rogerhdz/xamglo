@@ -25,6 +25,9 @@ namespace XamarinPO.Services
                 case "SettingsPage":
                     await Navigate(new SettingsPage());
                     break;
+                case "TestApiPage":
+                    await Navigate(new TestApiPage());
+                    break;
                 default:
                     break;
             }

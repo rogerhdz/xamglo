@@ -72,7 +72,7 @@ namespace XamarinPO.ViewModel
         /// Loads the orders from API
         /// </summary>
         /// <returns></returns>
-        async Task LoadOrders()
+        async void LoadOrders()
         {
             Orders = new ObservableCollection<OrderViewModel>();
             IsRunning = true;

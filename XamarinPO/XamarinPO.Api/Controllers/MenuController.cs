@@ -32,6 +32,12 @@ namespace XamarinPO.Api.Controllers
                 Title = "Settings",
                 PageName = "SettingsPage"
             });
+            menu.Add(new MenuItem()
+            {
+                Icon = "ic_menu_testapi",
+                Title = "Test Api",
+                PageName = "TestApiPage"
+            });
             return menu;
         }
     }

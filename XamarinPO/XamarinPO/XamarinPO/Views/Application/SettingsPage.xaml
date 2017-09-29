@@ -18,7 +18,7 @@
                 BorderRadius="25"
                 BackgroundColor="{StaticResource MainColor}"
                 TextColor="{StaticResource MenuFontColor}"
-                Text="Guardar Configuración"
+                Text="Save Configuration"
                 Command="{Binding SaveCommand}"
                 ></Button>
         </StackLayout>
