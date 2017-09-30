@@ -18,7 +18,7 @@ namespace XamarinPO.Api.Controllers
             {
                 orders.Add(new Order()
                 {
-                    ClientId = Guid.NewGuid(),
+                    Client = string.Format("Client {0}",i),
                     Description = string.Format("Description Order {0}", i),
                     DeliveryInformation = string.Format("Delivery Information Order {0}", i),
                     Id = i,

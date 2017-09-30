@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Xamarin.Forms;
+using XamarinPO.Interfaces;
 using XamarinPO.Views.Application;
 using XamarinPO.Views.Client;
 using XamarinPO.Views.Order;
@@ -24,6 +25,12 @@ namespace XamarinPO.Services
                     break;
                 case "SettingsPage":
                     await Navigate(new SettingsPage());
+                    break;
+                case "AboutUsPage":
+                    await Navigate(new AboutUs());
+                    break;
+                case "CloseApp":
+                    DependencyService.Get<INativeHelper>().CloseApp();
                     break;
                 default:
                     break;

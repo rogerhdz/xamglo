@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="XamarinPO.Views.Application.AboutUs"
+             BackgroundColor="{StaticResource BackgroundColor}"
+             Title="About Us">
+    <ScrollView>
+        <StackLayout HorizontalOptions="FillAndExpand" Padding="10">
+            <Image WidthRequest="120" HeightRequest="120" VerticalOptions="Start" Source="ic_luncher_aboutus"></Image>
+            <Label Text="XamarinPO" TextColor="{StaticResource FontColor}" FontSize="25" LineBreakMode="WordWrap" HorizontalTextAlignment="Center"/>
+            <BoxView   VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="5" WidthRequest="200" Color="#5b5d68"></BoxView>
+            
+            <Label Text="This app has been designed to show you how to implement a cross platform application, trying to create a good example of how a simplified disign could fit in IOS and Android without depending on two developer teams, one for each mobile operating system." 
+                   FontSize="17" LineBreakMode="WordWrap" HorizontalTextAlignment="Center"/>
+            <Image WidthRequest="150" HeightRequest="150" VerticalOptions="Start" Source="appStores"></Image>
+
+            <Label Text="Dev Team" TextColor="{StaticResource FontColor}" FontSize="25" LineBreakMode="WordWrap" HorizontalTextAlignment="Center"/>
+            <BoxView   VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="5" WidthRequest="200" Color="#5b5d68"></BoxView>
+            <Label Text="We are a couple of developers passionate for innovating and always looking for new dev challenges. We hope this product can help you to understand how Xamarin Technology could improve your business, making the creative process cheaper and faster with a great quality." 
+                   FontSize="17" LineBreakMode="WordWrap" HorizontalTextAlignment="Center"/>
+        </StackLayout>
+
+    </ScrollView>
+</ContentPage>

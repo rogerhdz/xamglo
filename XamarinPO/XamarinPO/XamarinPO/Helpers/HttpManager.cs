@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace XamarinPO.Helpers
@@ -26,8 +27,99 @@ namespace XamarinPO.Helpers
             var jsonResult = await response.Content.ReadAsStringAsync();
 
             result.Success = response.IsSuccessStatusCode;
-            result.Items = JsonConvert.DeserializeObject<List<T>>(jsonResult);
-            result.Message = response.IsSuccessStatusCode ? "Correcto" : jsonResult;
+            result.ObjectResult = JsonConvert.DeserializeObject<List<T>>(jsonResult);
+            result.Message = response.IsSuccessStatusCode ? "Success" : jsonResult;
+            return result;
+        }
+
+        /// <summary>
+        /// Generates a Get call to api receiving a configuration object 
+        /// </summary>
+        /// <param name="configuration">Location of api method to consume</param>
+        /// <returns> HttpManagerResult<T/> object with a list of required items, success flag and message</returns>
+        public async Task<HttpManagerResult<T>> HttpGetAzureList(HttpManagerConfiguration configuration)
+        {
+            var result = new HttpManagerResult<T>();
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("ZUMO-API-VERSION", "2.0.0");
+            client.BaseAddress = new Uri(configuration.Server);
+            try
+            {
+                var response = await client.GetAsync(configuration.Method);
+                var jsonResult = await response.Content.ReadAsStringAsync();
+
+                result.Success = response.IsSuccessStatusCode;
+                result.ObjectResult = result.Success ? JsonConvert.DeserializeObject<List<T>>(jsonResult) : new List<T>();
+                result.Message = response.IsSuccessStatusCode ? "Success" : jsonResult;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.ObjectResult = new List<T>();
+                result.Message = ex.Message;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Generates a Get call to api receiving a configuration object 
+        /// </summary>
+        /// <param name="configuration">Location of api method to consume</param>
+        /// <param name="objectToUpdate">Object to send to api</param>
+        /// <returns> HttpManagerResult<T/> object with a list of required items, success flag and message</returns>
+        public async Task<HttpManagerResult<T>> HttpPatchAzure(HttpManagerConfiguration configuration, T objectToUpdate)
+        {
+            var result = new HttpManagerResult<T>();
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("ZUMO-API-VERSION", "2.0.0");
+            client.BaseAddress = new Uri(configuration.Server);
+            try
+            {
+                var request = new HttpRequestMessage(new HttpMethod("PATCH"), configuration.Method)
+                {
+                    Content = new StringContent(LowercaseJsonSerializer.SerializeObject(objectToUpdate), Encoding.UTF8, "application/json")
+                };
+
+                var response = await client.SendAsync(request);
+                var jsonResult = await response.Content.ReadAsStringAsync();
+
+                result.Success = response.IsSuccessStatusCode;
+                result.ObjectResult = null;
+                result.Message = response.IsSuccessStatusCode ? "Success" : jsonResult;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.ObjectResult = null;
+                result.Message = ex.Message;
+            }
+
+            return result;
+        }
+
+        public async Task<HttpManagerResult<T>> HttpGetAzureTuple(HttpManagerConfiguration configuration)
+        {
+            var result = new HttpManagerResult<T>();
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("ZUMO-API-VERSION", "2.0.0");
+            client.BaseAddress = new Uri(configuration.Server);
+            try
+            {
+                var response = await client.GetAsync(configuration.Method);
+                var jsonResult = await response.Content.ReadAsStringAsync();
+
+                result.Success = response.IsSuccessStatusCode;
+                if (result.Success)
+                    result.ObjectResult = JsonConvert.DeserializeObject<T>(jsonResult);
+                result.Message = response.IsSuccessStatusCode ? "Success" : jsonResult;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = ex.Message;
+            }
+
             return result;
         }
     }
@@ -40,7 +132,7 @@ namespace XamarinPO.Helpers
 
     public class HttpManagerResult<T>
     {
-        public List<T> Items { get; set; }
+        public object ObjectResult { get; set; }
         public bool Success { get; set; }
         public string Message { get; set; }
     }
