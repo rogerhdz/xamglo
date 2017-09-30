@@ -1,16 +1,16 @@
 ﻿using GalaSoft.MvvmLight.Command;
-using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Xamarin.Forms;
 using XamarinPO.Services;
 using XamarinPO.Extensions;
 using XamarinPO.Helpers;
-using XamarinPO.ViewModel.Application;
+using XamarinPO.Interfaces;
 using XamarinPO.ViewModel.Menu;
 using XamarinPO.ViewModel.Order;
-using XamarinPO.Views.Order;
 
 namespace XamarinPO.ViewModel
 {
@@ -29,7 +29,6 @@ namespace XamarinPO.ViewModel
         public ObservableCollection<MenuItemViewModel> Menu { get; set; }
         public ObservableCollection<OrderViewModel> Orders { get; set; }
         public NavigationService NavigationService { get; }
-        public SettingsViewModel NewSettings { get; private set; }
 
         public bool IsRunning
         {
@@ -70,34 +69,26 @@ namespace XamarinPO.ViewModel
             //Instance result observable list
             Orders = new ObservableCollection<OrderViewModel>();
             IsRunning = true;
-            Result = "Cargando Resultados";
-            try
+            Result = "Loading Results";
+            //Create configurator to know consume api
+            var config = new HttpManagerConfiguration
             {
-                //Create configurator to know consume api
-                var config = new HttpManagerConfiguration
-                {
-                    Method = "/Api/Order/GetOrders",
-                    Server = "http://192.168.56.1:5555"
-                };
-                //Create manager
-                var manager = new HttpManager<OrderViewModel>();
-                //Get object with items, isSuccess and message
-                HttpManagerResult<OrderViewModel> result = await manager.HttpGetList(config);
-                Result = result.Message;
-                if (result.Success)
-                {
-                    //Modify observable
-                    Orders.AddRange(result.Items);
-                }
-            }
-            catch (Exception ex)
+                Method = "/Tables/Orders",
+                Server = "http://xamarinpo.azurewebsites.net"
+            };
+            //Create manager
+            var manager = new HttpManager<OrderViewModel>();
+            //Get object with items, isSuccess and message
+            HttpManagerResult<OrderViewModel> result = await manager.HttpGetAzureList(config);
+            Result = result.Message;
+            if (result.Success)
             {
-                Result = ex.Message;
+                //Modify observable
+                Orders.Clear();
+                Orders.AddRange((List<OrderViewModel>)result.ObjectResult);
             }
-            finally
-            {
-                IsRunning = false;
-            }
+
+            IsRunning = false;
         }
 
         async void LoadMenu()
@@ -105,34 +96,26 @@ namespace XamarinPO.ViewModel
             //Instance result observable list
             Menu = new ObservableCollection<MenuItemViewModel>();
             IsRunning = true;
-            Result = "Cargando Menú";
-            try
+            Result = "Loading Menú";
+
+            //Create configurator to know consume api
+            var config = new HttpManagerConfiguration
             {
-                //Create configurator to know consume api
-                var config = new HttpManagerConfiguration
-                {
-                    Method = "/Api/Menu/GetMenu",
-                    Server = "http://192.168.56.1:5555"
-                };
-                //Create manager
-                var manager = new HttpManager<MenuItemViewModel>();
-                //Get object with items, isSuccess and message
-                HttpManagerResult<MenuItemViewModel> result = await manager.HttpGetList(config);
-                Result = result.Message;
-                if (result.Success)
-                {
-                    //Modify observable
-                    Menu.AddRange(result.Items);
-                }
-            }
-            catch (Exception ex)
+                Method = "/Tables/Menu",
+                Server = "http://xamarinpo.azurewebsites.net"
+            };
+            //Create manager
+            var manager = new HttpManager<MenuItemViewModel>();
+            //Get object with items, isSuccess and message
+            HttpManagerResult<MenuItemViewModel> result = await manager.HttpGetAzureList(config);
+            Result = result.Message;
+            if (result.Success)
             {
-                Result = ex.Message;
+                //Modify observable
+                Menu.Clear();
+                Menu.AddRange((List<MenuItemViewModel>)result.ObjectResult);
             }
-            finally
-            {
-                IsRunning = false;
-            }
+            IsRunning = false;
         }
         #endregion
 
@@ -148,14 +131,6 @@ namespace XamarinPO.ViewModel
 
         private void GoTo(string PageName)
         {
-            switch (PageName)
-            {
-                case "SettingsViewModel":
-                    NewSettings = new SettingsViewModel();
-                    break;
-                default:
-                    break;
-            }
             NavigationService.Navigate(PageName);
         }
 

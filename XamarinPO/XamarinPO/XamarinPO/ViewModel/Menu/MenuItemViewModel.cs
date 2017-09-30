@@ -19,6 +19,7 @@ namespace XamarinPO.ViewModel.Menu
         public string Title { get; set; }
         public string PageName { get; set; }
         #endregion
+
         public MenuItemViewModel()
         {
             NavigationService = new NavigationService();
