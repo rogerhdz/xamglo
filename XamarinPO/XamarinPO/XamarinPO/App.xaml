@@ -17,8 +17,6 @@
             <Color x:Key="MenuFontColor">#FFF</Color>
             <!-- Locator -->
             <infra:InstanceLocator x:Key="Locator"></infra:InstanceLocator>
-            <!-- Locator -->
-            <config:ServerUrl x:Key=""></config:ServerUrl>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
