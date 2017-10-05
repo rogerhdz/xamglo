@@ -1,11 +1,7 @@
-﻿using System;
-
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
+using PCLAppConfig;
 
 namespace XamarinPO.Droid
 {
@@ -20,6 +16,7 @@ namespace XamarinPO.Droid
             base.OnCreate(bundle);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
+            ConfigurationManager.Initialise(PCLAppConfig.FileSystemStream.PortableStream.Current);
             LoadApplication(new App());
         }
     }

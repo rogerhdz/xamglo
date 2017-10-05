@@ -3,7 +3,10 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
+using PCLAppConfig;
+using Xamarin.Forms;
 using XamarinPO.Helpers;
+using XamarinPO.Interfaces;
 using XamarinPO.Services;
 
 namespace XamarinPO.ViewModel.Application
@@ -61,58 +64,106 @@ namespace XamarinPO.ViewModel.Application
         public SettingsViewModel()
         {
             dialogService = new DialogService();
-            GetServerUrl(true);
+            
+            SetToAppServerUrl();
         }
 
         public ICommand SaveCommand => new RelayCommand(Save);
 
         private async void Save()
         {
-            var settingsObj = await GetServerUrl(false);
-            settingsObj.ServerUrl = this.ServerUrl;
             IsRunning = true;
             Result = "Saving Settings";
+
+            //Get settings from application property
+            var settingsObj = ApplicationPropertiesManager.LoadApplicationProperty<Settings>("settings");
+
+            //Update the new api end point
+            settingsObj.ServerUrl = ServerUrl;
+
+            //Set server to update
             var config = new HttpManagerConfiguration
             {
                 Method = "/Tables/Settings",
-                Server = "http://xamarinpo.azurewebsites.net"
+                Server = settingsObj.ServerUrl
             };
-
             var manager = new HttpManager<Settings>();
-            //Get object with items, isSuccess and message
-            HttpManagerResult<Settings> result = await manager.HttpPatchAzure(config,settingsObj);
+            HttpManagerResult<Settings> result = await manager.HttpPatchAzure(config, settingsObj);
             Result = result.Message;
             if (result.Success)
                 await dialogService.ShowMessage("Settings configured Correctly.", "Settings");
             else
                 await dialogService.ShowMessage("Error configuring settings.", "Settings");
+
+            //Read te current configuration on file
+            //string configText = DependencyService.Get<IFilesManager>().LoadText("App.config");
+
+            //If reading was successfull 
+            //if (configText != string.Empty)
+            //{
+                
+                //create new configuration and update local file
+                //string newConfigText = configText.Replace(settingsObj.ServerUrl, ServerUrl);
+                //DependencyService.Get<IFilesManager>().SaveText("App.config", newConfigText);
+                //SetToAppServerUrl();
+                ////update old server if possible
+                //Set server to update
+                //var config = new HttpManagerConfiguration
+                //{
+                //    Method = "/Tables/Settings",
+                //    Server = settingsObj.ServerUrl
+                //};
+                // var manager = new HttpManager<Settings>();
+                //HttpManagerResult<Settings> result = await manager.HttpPatchAzure(config, settingsObj);
+                //Result = result.Message;
+                //if (result.Success)
+                //    await dialogService.ShowMessage("Settings configured Correctly.", "Settings");
+                //else
+                //    await dialogService.ShowMessage("Error configuring settings.", "Settings");
+            //}
+            //else
+            //{
+            //    await dialogService.ShowMessage("Error configuring settings.", "Settings");
+            //}
             IsRunning = false;
         }
 
-        async Task<Settings> GetServerUrl(bool updateValue)
+        async Task<Settings> GetApiServerUrl()
         {
             //Instance result observable list
             settings = new Settings();
             IsRunning = true;
             Result = "Loading Settings";
-            //Create configurator to know consume api
+            //Create configurator to consume api
             var config = new HttpManagerConfiguration
             {
                 Method = "/Tables/Settings",
-                Server = "http://xamarinpo.azurewebsites.net"
+                Server = ConfigurationManager.AppSettings["ServerUrl"]
             };
+
+
             //Create manager
             var manager = new HttpManager<Settings>();
             //Get object with items, isSuccess and message
             HttpManagerResult<Settings> result = await manager.HttpGetAzureList(config);
             Result = result.Message;
-            var settingsObj = ((List<Settings>) result.ObjectResult)[0];
-            if (result.Success && updateValue)
+            var settingsObj = ((List<Settings>)result.ObjectResult)[0];
+            if (!result.Success)
             {
-                ServerUrl = settingsObj.ServerUrl;
+                settingsObj.ServerUrl = "Error ocurred";
             }
             IsRunning = false;
             return settingsObj;
+        }
+
+        async void SetToAppServerUrl()
+        {
+            //Obtains url to point from app.config the first time, then obtains url from server
+            settings = await GetApiServerUrl();
+            //Set url got from server and applies it to an application property to avoid going server each request
+            await ApplicationPropertiesManager.SaveApplicationProperty("settings", settings);
+            //Set url to two-way-binding property to show it in front
+            ServerUrl = settings.ServerUrl;
         }
 
         public class Settings
