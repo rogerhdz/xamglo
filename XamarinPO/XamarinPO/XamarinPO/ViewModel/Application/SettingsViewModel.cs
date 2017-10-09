@@ -3,7 +3,10 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
+using PCLAppConfig;
+using Xamarin.Forms;
 using XamarinPO.Helpers;
+using XamarinPO.Interfaces;
 using XamarinPO.Services;
 
 namespace XamarinPO.ViewModel.Application
@@ -56,60 +59,70 @@ namespace XamarinPO.ViewModel.Application
         #endregion
 
         public Settings settings { get; set; }
-        private DialogService dialogService;
+        private readonly DialogService dialogService;
 
         public SettingsViewModel()
         {
             dialogService = new DialogService();
-            GetServerUrl(true);
+            GetApiServerUrl();
         }
 
         public ICommand SaveCommand => new RelayCommand(Save);
 
         private async void Save()
         {
-            var settingsObj = await GetServerUrl(false);
-            settingsObj.ServerUrl = this.ServerUrl;
             IsRunning = true;
             Result = "Saving Settings";
+
+            //Get settings from application property
+            var settingsObj = ApplicationPropertiesManager.Load<Settings>("settings");
+
+            //Update the new api end point
+            settingsObj.ServerUrl = ServerUrl;
+
+            //Set server to update
             var config = new HttpManagerConfiguration
             {
                 Method = "/Tables/Settings",
-                Server = "http://xamarinpo.azurewebsites.net"
+                Server = settingsObj.ServerUrl
             };
-
             var manager = new HttpManager<Settings>();
-            //Get object with items, isSuccess and message
-            HttpManagerResult<Settings> result = await manager.HttpPatchAzure(config,settingsObj);
+            HttpManagerResult<Settings> result = await manager.HttpPatchAzure(config, settingsObj);
             Result = result.Message;
             if (result.Success)
+            {
+                await ApplicationPropertiesManager.Save("settings", settingsObj);
                 await dialogService.ShowMessage("Settings configured Correctly.", "Settings");
+            }
             else
                 await dialogService.ShowMessage("Error configuring settings.", "Settings");
+
             IsRunning = false;
         }
 
-        async Task<Settings> GetServerUrl(bool updateValue)
+        async Task<Settings> GetApiServerUrl()
         {
             //Instance result observable list
             settings = new Settings();
             IsRunning = true;
             Result = "Loading Settings";
-            //Create configurator to know consume api
+            //Create configurator to consume api
             var config = new HttpManagerConfiguration
             {
                 Method = "/Tables/Settings",
-                Server = "http://xamarinpo.azurewebsites.net"
+                Server = ConfigurationManager.AppSettings["ServerUrl"]
             };
+
+
             //Create manager
             var manager = new HttpManager<Settings>();
             //Get object with items, isSuccess and message
             HttpManagerResult<Settings> result = await manager.HttpGetAzureList(config);
             Result = result.Message;
-            var settingsObj = ((List<Settings>) result.ObjectResult)[0];
-            if (result.Success && updateValue)
+            var settingsObj = ((List<Settings>)result.ObjectResult)[0];
+            if (!result.Success)
             {
-                ServerUrl = settingsObj.ServerUrl;
+                settingsObj.ServerUrl = "Error ocurred";
             }
             IsRunning = false;
             return settingsObj;
