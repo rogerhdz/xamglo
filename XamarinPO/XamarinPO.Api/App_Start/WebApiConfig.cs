@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Web.Http;
 
 namespace XamarinPO.Api
@@ -13,6 +14,12 @@ namespace XamarinPO.Api
 
             // Web API routes
             config.MapHttpAttributeRoutes();
+
+            config.Routes.MapHttpRoute(
+                name: "Api with action",
+                routeTemplate: "api/{controller}/{action}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",

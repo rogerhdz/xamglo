@@ -23,12 +23,22 @@ namespace XamarinPO.Helpers
             var result = new HttpManagerResult<T>();
             var client = new HttpClient();
             client.BaseAddress = new Uri(configuration.Server);
-            var response = await client.GetAsync(configuration.Method);
-            var jsonResult = await response.Content.ReadAsStringAsync();
 
-            result.Success = response.IsSuccessStatusCode;
-            result.ObjectResult = JsonConvert.DeserializeObject<List<T>>(jsonResult);
-            result.Message = response.IsSuccessStatusCode ? "Success" : jsonResult;
+            try
+            {
+                var response = await client.GetAsync(configuration.Method);
+                var jsonResult = await response.Content.ReadAsStringAsync();
+
+                result.Success = response.IsSuccessStatusCode;
+                result.ObjectResult = result.Success ? JsonConvert.DeserializeObject<List<T>>(jsonResult) : new List<T>();
+                result.Message = response.IsSuccessStatusCode ? "Success" : jsonResult;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.ObjectResult = new List<T>();
+                result.Message = ex.Message;
+            }
             return result;
         }
 

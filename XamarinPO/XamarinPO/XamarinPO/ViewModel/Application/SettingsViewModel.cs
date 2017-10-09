@@ -59,13 +59,12 @@ namespace XamarinPO.ViewModel.Application
         #endregion
 
         public Settings settings { get; set; }
-        private DialogService dialogService;
+        private readonly DialogService dialogService;
 
         public SettingsViewModel()
         {
             dialogService = new DialogService();
-            
-            SetToAppServerUrl();
+            GetApiServerUrl();
         }
 
         public ICommand SaveCommand => new RelayCommand(Save);
@@ -76,7 +75,7 @@ namespace XamarinPO.ViewModel.Application
             Result = "Saving Settings";
 
             //Get settings from application property
-            var settingsObj = ApplicationPropertiesManager.LoadApplicationProperty<Settings>("settings");
+            var settingsObj = ApplicationPropertiesManager.Load<Settings>("settings");
 
             //Update the new api end point
             settingsObj.ServerUrl = ServerUrl;
@@ -91,40 +90,13 @@ namespace XamarinPO.ViewModel.Application
             HttpManagerResult<Settings> result = await manager.HttpPatchAzure(config, settingsObj);
             Result = result.Message;
             if (result.Success)
+            {
+                await ApplicationPropertiesManager.Save("settings", settingsObj);
                 await dialogService.ShowMessage("Settings configured Correctly.", "Settings");
+            }
             else
                 await dialogService.ShowMessage("Error configuring settings.", "Settings");
 
-            //Read te current configuration on file
-            //string configText = DependencyService.Get<IFilesManager>().LoadText("App.config");
-
-            //If reading was successfull 
-            //if (configText != string.Empty)
-            //{
-                
-                //create new configuration and update local file
-                //string newConfigText = configText.Replace(settingsObj.ServerUrl, ServerUrl);
-                //DependencyService.Get<IFilesManager>().SaveText("App.config", newConfigText);
-                //SetToAppServerUrl();
-                ////update old server if possible
-                //Set server to update
-                //var config = new HttpManagerConfiguration
-                //{
-                //    Method = "/Tables/Settings",
-                //    Server = settingsObj.ServerUrl
-                //};
-                // var manager = new HttpManager<Settings>();
-                //HttpManagerResult<Settings> result = await manager.HttpPatchAzure(config, settingsObj);
-                //Result = result.Message;
-                //if (result.Success)
-                //    await dialogService.ShowMessage("Settings configured Correctly.", "Settings");
-                //else
-                //    await dialogService.ShowMessage("Error configuring settings.", "Settings");
-            //}
-            //else
-            //{
-            //    await dialogService.ShowMessage("Error configuring settings.", "Settings");
-            //}
             IsRunning = false;
         }
 
@@ -154,16 +126,6 @@ namespace XamarinPO.ViewModel.Application
             }
             IsRunning = false;
             return settingsObj;
-        }
-
-        async void SetToAppServerUrl()
-        {
-            //Obtains url to point from app.config the first time, then obtains url from server
-            settings = await GetApiServerUrl();
-            //Set url got from server and applies it to an application property to avoid going server each request
-            await ApplicationPropertiesManager.SaveApplicationProperty("settings", settings);
-            //Set url to two-way-binding property to show it in front
-            ServerUrl = settings.ServerUrl;
         }
 
         public class Settings
