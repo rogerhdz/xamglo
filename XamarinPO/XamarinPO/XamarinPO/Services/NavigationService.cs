@@ -32,6 +32,9 @@ namespace XamarinPO.Services
                 case "CloseApp":
                     DependencyService.Get<INativeHelper>().CloseApp();
                     break;
+                case "TestApiPage":
+                    await Navigate(new TestApiPage());
+                    break;
                 default:
                     break;
             }

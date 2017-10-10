@@ -10,7 +10,8 @@
             <Label TextColor="{StaticResource FontColor}"
                    Text="Title"></Label>
             <Entry TextColor="{StaticResource FontColor}"
-                   BackgroundColor="{StaticResource BackgroundColor}"></Entry>
+                   BackgroundColor="{StaticResource BackgroundColor}"
+                   Keyboard="Text"></Entry>
             <Label TextColor="{StaticResource FontColor}"
                    Text="Description"></Label>
             <Editor TextColor="{StaticResource FontColor}"
@@ -18,12 +19,7 @@
             <Label TextColor="{StaticResource FontColor}"
                    Text="Delivery Date"></Label>
             <DatePicker></DatePicker>
-            <Button
-                HeightRequest="50"
-                BorderRadius="25"
-                BackgroundColor="{StaticResource MainColor}"
-                TextColor="{StaticResource MenuFontColor}"
-                Text="Guardar"></Button>
+            <Button Text="Save"></Button>
         </StackLayout>
     </ScrollView>
 </ContentPage>
