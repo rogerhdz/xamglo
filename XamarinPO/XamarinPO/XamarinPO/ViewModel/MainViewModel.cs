@@ -23,14 +23,34 @@ namespace XamarinPO.ViewModel
         #region Attributes
         bool _isRunning;
         string _result;
+        private ObservableCollection<OrderViewModel> _orders;
+        private ObservableCollection<MenuItemViewModel> _menu;
         #endregion
 
         #region Properties
 
-        public ObservableCollection<MenuItemViewModel> Menu { get; set; }
-        public ObservableCollection<OrderViewModel> Orders { get; set; }
         public NavigationService NavigationService { get; }
 
+        public ObservableCollection<MenuItemViewModel> Menu
+        {
+            get => _menu ?? (_menu = new ObservableCollection<MenuItemViewModel>());
+            set
+            {
+                if (_menu == Menu) return;
+                _menu = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Menu)));
+            }
+        }
+        public ObservableCollection<OrderViewModel> Orders
+        {
+            get => _orders ?? (_orders = new ObservableCollection<OrderViewModel>());
+            set
+            {
+                if (_orders == Orders) return;
+                _orders = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Orders)));
+            }
+        }
         public bool IsRunning
         {
             get => _isRunning;
@@ -56,14 +76,19 @@ namespace XamarinPO.ViewModel
         public MainViewModel()
         {
             NavigationService = new NavigationService();
-            ApplicationPropertiesManager.ClearAll();
-            //GetApiUrl();
-            LoadMenu();
-            LoadOrders();
         }
 
         #region Methods
-        void GetApiUrl()
+
+        public async Task InitApp()
+        {
+            ApplicationPropertiesManager.ClearAll();
+            await GetApiUrl();
+            await LoadMenu();
+            await LoadOrders();
+        }
+
+        async Task GetApiUrl()
         {
             //Instance result observable list
             IsRunning = true;
@@ -76,20 +101,18 @@ namespace XamarinPO.ViewModel
             };
 
             //Create manager
-            var manager = new HttpManager<SettingsViewModel.Settings>();
+            var manager = new HttpManager<Settings>();
             //Get object with items, isSuccess and message
-            HttpManagerResult<SettingsViewModel.Settings> result = manager.HttpGetAzureList(config).Result;
+            HttpManagerResult<Settings> result = await manager.HttpGetAzureList(config);
             Result = result.Message;
-            var settingsObj = ((List<SettingsViewModel.Settings>)result.ObjectResult)[0];
+            var settingsObj = ((List<Settings>)result.ObjectResult)[0];
             if (!result.Success)
             {
                 settingsObj.ServerUrl = "Error ocurred";
             }
             else
             {
-                ApplicationPropertiesManager.Save("ApiServer", settingsObj.ServerUrl);
-                LoadMenu();
-                LoadOrders();
+                await ApplicationPropertiesManager.Save("ApiServer", settingsObj);
             }
             IsRunning = false;
         }
@@ -109,7 +132,7 @@ namespace XamarinPO.ViewModel
             var config = new HttpManagerConfiguration
             {
                 Method = "api/tables/orders",
-                Server = "http://xamarinpoapi.azurewebsites.net"
+                Server = ApplicationPropertiesManager.Load<Settings>("ApiServer").ServerUrl
             };
             //Create manager
             var manager = new HttpManager<OrderViewModel>();
@@ -136,7 +159,7 @@ namespace XamarinPO.ViewModel
             var config = new HttpManagerConfiguration
             {
                 Method = "api/tables/menu",
-                Server = "http://xamarinpoapi.azurewebsites.net"
+                Server = ApplicationPropertiesManager.Load<Settings>("ApiServer").ServerUrl
             };
             //Create manager
             var manager = new HttpManager<MenuItemViewModel>();

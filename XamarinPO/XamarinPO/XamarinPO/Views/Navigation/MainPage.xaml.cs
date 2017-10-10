@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using XamarinPO.ViewModel;
 
 namespace XamarinPO.Views.Navigation
 {
@@ -16,5 +17,11 @@ namespace XamarinPO.Views.Navigation
 		{
 			InitializeComponent();
 		}
-	}
+
+	    protected override async void OnAppearing()
+	    {
+	        await ((MainViewModel)BindingContext).InitApp();
+	        base.OnAppearing();
+	    }
+    }
 }
