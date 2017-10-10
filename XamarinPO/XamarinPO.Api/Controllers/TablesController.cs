@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -9,9 +8,30 @@ using XamarinPO.Api.Models;
 
 namespace XamarinPO.Api.Controllers
 {
-    public class MenuController : ApiController
+    public class TablesController : ApiController
     {
-        public IEnumerable<MenuItem> GetMenu()
+        [AcceptVerbs("Get")]
+        public IEnumerable<Order> Orders()
+        {
+            var orders = new List<Order>();
+            for (int i = 1; i <= 10; i++)
+            {
+                orders.Add(new Order
+                {
+                    Client = string.Format("Client {0}", i),
+                    Description = string.Format("Description Order {0}", i),
+                    DeliveryInformation = string.Format("Delivery Information Order {0}", i),
+                    Id = i,
+                    CreationDate = DateTime.Now.AddDays(i),
+                    DeliveryDate = DateTime.Now.AddDays(5 + i),
+                    Title = string.Format("Order's Title {0}", i)
+                });
+            }
+            return orders;
+        }
+
+        [AcceptVerbs("Get")]
+        public IEnumerable<MenuItem> Menu()
         {
             var menu = new List<MenuItem>();
             menu.Add(new MenuItem
@@ -43,12 +63,6 @@ namespace XamarinPO.Api.Controllers
                 Icon = null,
                 Title = "Close",
                 PageName = "CloseApp"
-            });
-            menu.Add(new MenuItem()
-            {
-                Icon = "ic_menu_testapi",
-                Title = "Test Api",
-                PageName = "TestApiPage"
             });
             return menu;
         }

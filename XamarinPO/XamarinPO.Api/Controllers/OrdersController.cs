@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using XamarinPO.Api.Models;
 
 namespace XamarinPO.Api.Controllers
 {
-    public class OrderController : ApiController
+    public class OrdersController : ApiController
     {
         public IEnumerable<Order> GetOrders()
         {
             var orders = new List<Order>();
             for (int i = 1; i <= 10; i++)
             {
-                orders.Add(new Order()
+                orders.Add(new Order
                 {
-                    ClientId = Guid.NewGuid(),
+                    Client = string.Format("Client {0}", i),
                     Description = string.Format("Description Order {0}", i),
                     DeliveryInformation = string.Format("Delivery Information Order {0}", i),
                     Id = i,

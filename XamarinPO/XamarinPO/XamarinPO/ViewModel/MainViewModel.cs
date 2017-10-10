@@ -1,18 +1,16 @@
 ﻿using GalaSoft.MvvmLight.Command;
-using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using XamarinPO.Services;
+using PCLAppConfig;
 using XamarinPO.Extensions;
+using XamarinPO.Services;
 using XamarinPO.Helpers;
 using XamarinPO.ViewModel.Application;
 using XamarinPO.ViewModel.Menu;
 using XamarinPO.ViewModel.Order;
-using XamarinPO.Views.Order;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace XamarinPO.ViewModel
 {
@@ -28,11 +26,10 @@ namespace XamarinPO.ViewModel
         #endregion
 
         #region Properties
+
         public ObservableCollection<MenuItemViewModel> Menu { get; set; }
         public ObservableCollection<OrderViewModel> Orders { get; set; }
         public NavigationService NavigationService { get; }
-        public SettingsViewModel NewSettings { get; private set; }
-        public HttpManagerConfiguration ManagerConfiguration { get; set; }
 
         public bool IsRunning
         {
@@ -59,77 +56,99 @@ namespace XamarinPO.ViewModel
         public MainViewModel()
         {
             NavigationService = new NavigationService();
-            ManagerConfiguration = new HttpManagerConfiguration()
-            {
-                Server = "http://192.168.56.1:5555"
-            };
+            ApplicationPropertiesManager.ClearAll();
+            //GetApiUrl();
             LoadMenu();
             LoadOrders();
         }
 
         #region Methods
+        void GetApiUrl()
+        {
+            //Instance result observable list
+            IsRunning = true;
+            Result = "Loading Settings";
+            //Create configurator to consume api
+            var config = new HttpManagerConfiguration
+            {
+                Method = "/Tables/Settings",
+                Server = ConfigurationManager.AppSettings["SettingsServer"]
+            };
+
+            //Create manager
+            var manager = new HttpManager<SettingsViewModel.Settings>();
+            //Get object with items, isSuccess and message
+            HttpManagerResult<SettingsViewModel.Settings> result = manager.HttpGetAzureList(config).Result;
+            Result = result.Message;
+            var settingsObj = ((List<SettingsViewModel.Settings>)result.ObjectResult)[0];
+            if (!result.Success)
+            {
+                settingsObj.ServerUrl = "Error ocurred";
+            }
+            else
+            {
+                ApplicationPropertiesManager.Save("ApiServer", settingsObj.ServerUrl);
+                LoadMenu();
+                LoadOrders();
+            }
+            IsRunning = false;
+        }
+
         /// <summary>
         /// Loads the orders from API
         /// </summary>
         /// <returns></returns>
-        async void LoadOrders()
+        async Task LoadOrders()
         {
+
+            //Instance result observable list
             Orders = new ObservableCollection<OrderViewModel>();
             IsRunning = true;
-            try
+            Result = "Loading Results";
+            //Create configurator to know consume api
+            var config = new HttpManagerConfiguration
             {
-                //Create configurator to know consume api
-                ManagerConfiguration.Method = "/Api/Order/GetOrders";
-                //Create manager
-                var manager = new HttpManager<OrderViewModel>();
-                //Get object with items, isSuccess and message
-                HttpManagerResult<OrderViewModel> result = await manager.HttpGetList(ManagerConfiguration);
-                Result = result.Message;
-                if (result.Success)
-                {
-                    //Modify observable
-                    Orders.AddRange(result.Items);
-                }
-            }
-            catch (Exception ex)
+                Method = "api/tables/orders",
+                Server = "http://xamarinpoapi.azurewebsites.net"
+            };
+            //Create manager
+            var manager = new HttpManager<OrderViewModel>();
+            //Get object with items, isSuccess and message
+            HttpManagerResult<OrderViewModel> result = await manager.HttpGetList(config);
+            Result = result.Message;
+            if (result.Success)
             {
-                Result = ex.Message;
+                Orders.Clear();
+                Orders.AddRange((List<OrderViewModel>)result.ObjectResult);
             }
-            finally
-            {
-                IsRunning = false;
-            }
+
+            IsRunning = false;
         }
 
-        async void LoadMenu()
+        async Task LoadMenu()
         {
             //Instance result observable list
             Menu = new ObservableCollection<MenuItemViewModel>();
             IsRunning = true;
+            Result = "Loading Menu";
 
-            try
+            //Create configurator to know consume api
+            var config = new HttpManagerConfiguration
             {
-                //Create configurator to know consume api
-                ManagerConfiguration.Method = "/Api/Menu/GetMenu";
-                //Create manager
-                var manager = new HttpManager<MenuItemViewModel>();
-                //Get object with items, isSuccess and message
-                HttpManagerResult<MenuItemViewModel> result = await manager.HttpGetList(ManagerConfiguration);
-                Result = result.Message;
-                if (result.Success)
-                {
-                    //Modify observable
-                    Menu.AddRange(result.Items);
-                }
-            }
-            catch (Exception ex)
+                Method = "api/tables/menu",
+                Server = "http://xamarinpoapi.azurewebsites.net"
+            };
+            //Create manager
+            var manager = new HttpManager<MenuItemViewModel>();
+            //Get object with items, isSuccess and message
+            HttpManagerResult<MenuItemViewModel> result = await manager.HttpGetList(config);
+            Result = result.Message;
+            if (result.Success)
             {
-                Result = ex.Message;
+                Menu.Clear();
+                Menu.AddRange((List<MenuItemViewModel>)result.ObjectResult);
             }
-            finally
-            {
-                IsRunning = false;
-            }
+            IsRunning = false;
         }
         #endregion
 
@@ -145,14 +164,6 @@ namespace XamarinPO.ViewModel
 
         private void GoTo(string PageName)
         {
-            switch (PageName)
-            {
-                case "SettingsViewModel":
-                    NewSettings = new SettingsViewModel();
-                    break;
-                default:
-                    break;
-            }
             NavigationService.Navigate(PageName);
         }
 

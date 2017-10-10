@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using XamarinPO.ViewModel.Application;
 
 namespace XamarinPO.Views.Order
 {
@@ -14,7 +15,7 @@ namespace XamarinPO.Views.Order
 	{
 		public NewOrderPage ()
 		{
-			InitializeComponent ();
+			InitializeComponent ();   
 		}
 	}
 }
