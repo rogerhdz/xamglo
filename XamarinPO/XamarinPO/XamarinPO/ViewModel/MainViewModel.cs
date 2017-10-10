@@ -135,7 +135,7 @@ namespace XamarinPO.ViewModel
             //Create configurator to know consume api
             var config = new HttpManagerConfiguration
             {
-                Method = "api/tables/menu",
+                Method = "api/menu/getmenu",
                 Server = "http://xamarinpoapi.azurewebsites.net"
             };
             //Create manager

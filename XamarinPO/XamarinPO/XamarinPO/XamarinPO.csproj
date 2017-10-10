@@ -49,6 +49,7 @@
     <Compile Include="Services\DialogService.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="ViewModel\Application\SettingsViewModel.cs" />
+    <Compile Include="ViewModel\Application\TestApiViewModel.cs" />
     <Compile Include="Views\Application\AboutUs.xaml.cs">
       <DependentUpon>AboutUs.xaml</DependentUpon>
     </Compile>
@@ -58,6 +59,9 @@
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\Menu\MenuItemViewModel.cs" />
     <Compile Include="ViewModel\Order\OrderViewModel.cs" />
+    <Compile Include="Views\Application\TestApiPage.xaml.cs">
+      <DependentUpon>TestApiPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Client\ClientPage.xaml.cs">
       <DependentUpon>ClientPage.xaml</DependentUpon>
     </Compile>
@@ -172,6 +176,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\Application\AboutUs.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\Application\TestApiPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>

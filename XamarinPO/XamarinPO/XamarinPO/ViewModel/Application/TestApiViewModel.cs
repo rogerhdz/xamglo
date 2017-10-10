@@ -5,6 +5,7 @@ using System.Windows.Input;
 using XamarinPO.Helpers;
 using System;
 using System.ComponentModel;
+using Xamarin.Forms;
 
 namespace XamarinPO.ViewModel.Application
 {
@@ -75,7 +76,7 @@ namespace XamarinPO.ViewModel.Application
         {
             ManagerConfiguration = new HttpManagerConfiguration()
             {
-                Server = "http://192.168.56.1:5555"
+                Server = "http://xamarinpoapi.azurewebsites.net"
             };
             ResponseText = string.Empty;
             TestConnection();
@@ -101,19 +102,31 @@ namespace XamarinPO.ViewModel.Application
         {
             //Create manager
             var manager = new HttpManager<string>();
-            //Get object with items, isSuccess and message
-            var stringContent = new StringContent("{ \"value\": \"John\" }", System.Text.Encoding.UTF8, "application/json");
+            var stringContent = new StringContent(string.Format(@"""{0}""", postDataString), System.Text.Encoding.UTF8, "application/json");
             Result = await manager.HttpJsonPost(ManagerConfiguration, stringContent);
-            return Result.ResultObject.ToString();
+            return Result.ObjectResult.ToString();
         }
         #endregion
 
         #region Commands
+
+        public ICommand Share {
+            get { return new RelayCommand(ShareCommand); }
+        }
         public ICommand SendRequestCommand
         {
             get { return new RelayCommand(SendRequest); }
         }
 
+        async void ShareCommand()
+        {
+            if(string.IsNullOrEmpty(this.ResponseText))
+                await App.Current.MainPage.DisplayAlert("Error", "Nothing to share", "Accept");
+            else
+            {
+                MessagingCenter.Send<string>(this.ResponseText, "Share");
+            }
+        }
         async void SendRequest()
         {
             if (string.IsNullOrEmpty(RequestText))

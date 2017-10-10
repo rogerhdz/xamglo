@@ -1,7 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="XamarinPO.Views.Application.TestApiPage">
+             x:Class="XamarinPO.Views.Application.TestApiPage"
+             Title="Test Api Connection">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Share" Order="Secondary" Command="{Binding Share}" Name="Shared" />
+    </ContentPage.ToolbarItems>
+
     <ContentPage.Content>
         <StackLayout Padding="8" >
             <Label Text="Request text" />
