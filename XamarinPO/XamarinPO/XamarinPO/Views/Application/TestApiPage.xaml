@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="XamarinPO.Views.Application.TestApiPage"
+             Title="Test Api Connection">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Share" Order="Secondary" Command="{Binding Share}" Name="Shared" />
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+        <StackLayout Padding="8" >
+            <Label Text="Request text" />
+            <Entry TextColor="{StaticResource FontColor}"
+                   BackgroundColor="{StaticResource BackgroundColor}"
+                   Keyboard="Chat"
+                   Text="{Binding RequestText, Mode=TwoWay}"></Entry>
+            <Button Text="Send" Command="{Binding SendRequestCommand}"></Button>
+            <Label Text="Api Status"></Label>
+            <Label VerticalOptions="Center" 
+                   BackgroundColor="{StaticResource AccentColor2}"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,10"
+                   VerticalTextAlignment="Center"
+                   TextColor="{StaticResource BackgroundColor}"
+                   Text="{Binding ApiStatus, Mode=TwoWay}"></Label>
+            <Label Text="Api Response"></Label>
+            <Label VerticalOptions="FillAndExpand" 
+                   BackgroundColor="{StaticResource AccentColor2}"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,10"
+                   VerticalTextAlignment="Center"
+                   TextColor="{StaticResource BackgroundColor}"
+                   Text="{Binding ResponseText, Mode=TwoWay}">
+            </Label>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

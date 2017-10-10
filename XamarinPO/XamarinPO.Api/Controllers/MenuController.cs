@@ -44,6 +44,12 @@ namespace XamarinPO.Api.Controllers
                 Title = "Close",
                 PageName = "CloseApp"
             });
+            menu.Add(new MenuItem()
+            {
+                Icon = "ic_menu_testapi",
+                Title = "Test Api",
+                PageName = "TestApiPage"
+            });
             return menu;
         }
     }

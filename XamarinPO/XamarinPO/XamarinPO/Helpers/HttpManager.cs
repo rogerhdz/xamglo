@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,6 +39,33 @@ namespace XamarinPO.Helpers
                 result.Success = false;
                 result.ObjectResult = new List<T>();
                 result.Message = ex.Message;
+            }
+            return result;
+        }
+
+
+
+        public async Task<HttpManagerResult<T>> HttpJsonPost(HttpManagerConfiguration configuration, HttpContent content)
+        {
+            var result = new HttpManagerResult<T>();
+            var client = new HttpClient();
+            try
+            {                
+                client.BaseAddress = new Uri(configuration.Server);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                // HTTP POST
+                var response = await client.PostAsync(configuration.Method, content);
+                var Result = await response.Content.ReadAsStringAsync();
+
+                T complexResulObject = JsonConvert.DeserializeObject<T>(Result);
+                result.Success = response.IsSuccessStatusCode;
+                result.ObjectResult = complexResulObject;
+                result.Message = response.IsSuccessStatusCode ? "Success" : Result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
             return result;
         }
@@ -133,6 +161,7 @@ namespace XamarinPO.Helpers
             return result;
         }
     }
+
 
     public class HttpManagerConfiguration
     {

@@ -17,6 +17,27 @@
             <Color x:Key="MenuFontColor">#FFF</Color>
             <!-- Locator -->
             <infra:InstanceLocator x:Key="Locator"></infra:InstanceLocator>
+            <!-- Styles -->
+            <OnPlatform x:Key="GeneralButtonFont"
+                        x:TypeArguments="Font"
+                        iOS="12"
+                        Android="14"></OnPlatform>
+            <Style TargetType="Button">
+                <Setter Property="Font"
+                        Value="{StaticResource GeneralButtonFont}"></Setter>
+                <Setter Property="BorderRadius"
+                        Value="25"></Setter>
+                <Setter Property="HeightRequest"
+                        Value="50"></Setter>
+                <Setter Property="BackgroundColor"
+                        Value="{StaticResource MainColor}"></Setter>
+                <Setter Property="TextColor"
+                        Value="{StaticResource MenuFontColor}"></Setter>
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="TextColor"
+                        Value="{StaticResource FontColor}"></Setter>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
