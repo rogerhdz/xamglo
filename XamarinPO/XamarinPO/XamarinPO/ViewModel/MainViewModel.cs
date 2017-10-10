@@ -123,9 +123,10 @@ namespace XamarinPO.ViewModel
         /// <returns></returns>
         async Task LoadOrders()
         {
-
+            
             //Instance result observable list
             Orders = new ObservableCollection<OrderViewModel>();
+            Orders.Clear();
             IsRunning = true;
             Result = "Loading Results";
             //Create configurator to know consume api
