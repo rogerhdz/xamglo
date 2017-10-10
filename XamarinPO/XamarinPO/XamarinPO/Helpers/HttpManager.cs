@@ -49,23 +49,37 @@ namespace XamarinPO.Helpers
         {
             var result = new HttpManagerResult<T>();
             var client = new HttpClient();
+            HttpResponseMessage response = new HttpResponseMessage();
+            string resultMessage = string.Empty;
             try
             {                
                 client.BaseAddress = new Uri(configuration.Server);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 // HTTP POST
-                var response = await client.PostAsync(configuration.Method, content);
-                var Result = await response.Content.ReadAsStringAsync();
+                try
+                {
+                    response = await client.PostAsync(configuration.Method, content);
+                }
+                catch (Exception ex)
+                {
+                    result.Success = false;
+                    result.ObjectResult = ex.InnerException;
+                    result.Message = "Request Failed";
+                    return result;
+                }
+                resultMessage = await response.Content.ReadAsStringAsync();
 
-                T complexResulObject = JsonConvert.DeserializeObject<T>(Result);
+                T complexResulObject = JsonConvert.DeserializeObject<T>(resultMessage);
                 result.Success = response.IsSuccessStatusCode;
                 result.ObjectResult = complexResulObject;
-                result.Message = response.IsSuccessStatusCode ? "Success" : Result;
+                result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
             }
             catch (Exception ex)
             {
-                throw ex;
+                result.Success = false;
+                result.ObjectResult = ex.InnerException;
+                result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
             }
             return result;
         }

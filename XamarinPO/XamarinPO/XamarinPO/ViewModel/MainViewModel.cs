@@ -11,6 +11,7 @@ using XamarinPO.Helpers;
 using XamarinPO.ViewModel.Application;
 using XamarinPO.ViewModel.Menu;
 using XamarinPO.ViewModel.Order;
+using Xamarin.Forms;
 
 namespace XamarinPO.ViewModel
 {
@@ -142,7 +143,6 @@ namespace XamarinPO.ViewModel
             Result = result.Message;
             if (result.Success)
             {
-                Orders.Clear();
                 Orders.AddRange((List<OrderViewModel>)result.ObjectResult);
             }
 
@@ -153,6 +153,7 @@ namespace XamarinPO.ViewModel
         {
             //Instance result observable list
             Menu = new ObservableCollection<MenuItemViewModel>();
+            Menu.Clear();
             IsRunning = true;
             Result = "Loading Menu";
 
@@ -169,9 +170,20 @@ namespace XamarinPO.ViewModel
             Result = result.Message;
             if (result.Success)
             {
-                Menu.Clear();
                 Menu.AddRange((List<MenuItemViewModel>)result.ObjectResult);
             }
+            Menu.Add(new MenuItemViewModel
+            {
+                Icon = "ic_menu_settings",
+                Title = "Settings",
+                PageName = "SettingsPage"
+            });
+            Menu.Add(new MenuItemViewModel
+            {
+                Icon = "ic_menu_testapi",
+                Title = "Test Api",
+                PageName = "TestApiPage"
+            });
             IsRunning = false;
         }
         #endregion

@@ -9,30 +9,32 @@
     </ContentPage.ToolbarItems>
 
     <ContentPage.Content>
-        <StackLayout Padding="8" >
-            <Label Text="Request text" />
-            <Entry TextColor="{StaticResource FontColor}"
+        <ScrollView>
+            <StackLayout Padding="8" >
+                <Label Text="Request text" />
+                <Entry TextColor="{StaticResource FontColor}"
                    BackgroundColor="{StaticResource BackgroundColor}"
                    Keyboard="Chat"
                    Text="{Binding RequestText, Mode=TwoWay}"></Entry>
-            <Button Text="Send" Command="{Binding SendRequestCommand}"></Button>
-            <Label Text="Api Status"></Label>
-            <Label VerticalOptions="Center" 
+                <Button Text="Send" Command="{Binding SendRequestCommand}"></Button>
+                <Label Text="Api Status"></Label>
+                <Label VerticalOptions="Center" 
                    BackgroundColor="{StaticResource AccentColor2}"
                    HorizontalTextAlignment="Center"
                    Margin="0,10"
                    VerticalTextAlignment="Center"
                    TextColor="{StaticResource BackgroundColor}"
                    Text="{Binding ApiStatus, Mode=TwoWay}"></Label>
-            <Label Text="Api Response"></Label>
-            <Label VerticalOptions="FillAndExpand" 
+                <Label Text="Api Response"></Label>
+                <Label VerticalOptions="FillAndExpand" 
                    BackgroundColor="{StaticResource AccentColor2}"
                    HorizontalTextAlignment="Center"
                    Margin="0,10"
                    VerticalTextAlignment="Center"
                    TextColor="{StaticResource BackgroundColor}"
                    Text="{Binding ResponseText, Mode=TwoWay}">
-            </Label>
-        </StackLayout>
+                </Label>
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>
