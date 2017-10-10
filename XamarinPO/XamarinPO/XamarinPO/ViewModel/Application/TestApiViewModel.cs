@@ -6,6 +6,7 @@ using XamarinPO.Helpers;
 using System;
 using System.ComponentModel;
 using Xamarin.Forms;
+using XamarinPO.Services;
 
 namespace XamarinPO.ViewModel.Application
 {
@@ -69,6 +70,7 @@ namespace XamarinPO.ViewModel.Application
         }
         public HttpManagerConfiguration ManagerConfiguration { get; set; }
         public HttpManagerResult<string> Result { get; set; }
+        public DialogService DialogService { get; set; }
         #endregion
 
         #region Constructors
@@ -76,7 +78,7 @@ namespace XamarinPO.ViewModel.Application
         {
             ManagerConfiguration = new HttpManagerConfiguration()
             {
-                Server = "http://xamarinpoapi.azurewebsites.net"
+                Server = ApplicationPropertiesManager.Load<Settings>("ApiServer").ServerUrl
             };
             ResponseText = string.Empty;
             TestConnection();
@@ -92,6 +94,11 @@ namespace XamarinPO.ViewModel.Application
             ApiStatus = await PostAsync(string.Empty);
         }
 
+        private void SetRequestStatus()
+        {
+            ApiStatus = Result.Success ? "Request Success" : "Request Failed";
+        }
+
         public async Task<string> TestRequest()
         {
             ManagerConfiguration.Method = "/api/testapi/testrequest";
@@ -100,17 +107,24 @@ namespace XamarinPO.ViewModel.Application
 
         private async Task<string> PostAsync(string postDataString)
         {
-            //Create manager
-            var manager = new HttpManager<string>();
-            var stringContent = new StringContent(string.Format(@"""{0}""", postDataString), System.Text.Encoding.UTF8, "application/json");
-            Result = await manager.HttpJsonPost(ManagerConfiguration, stringContent);
+            try
+            {
+                var manager = new HttpManager<string>();
+                var stringContent = new StringContent(string.Format(@"""{0}""", postDataString), System.Text.Encoding.UTF8, "application/json");
+                Result = await manager.HttpJsonPost(ManagerConfiguration, stringContent);
+            }
+            catch (Exception ex)
+            {
+                ApiStatus = ex.Message;
+            }
             return Result.ObjectResult.ToString();
         }
         #endregion
 
         #region Commands
 
-        public ICommand Share {
+        public ICommand Share
+        {
             get { return new RelayCommand(ShareCommand); }
         }
         public ICommand SendRequestCommand
@@ -120,7 +134,7 @@ namespace XamarinPO.ViewModel.Application
 
         async void ShareCommand()
         {
-            if(string.IsNullOrEmpty(this.ResponseText))
+            if (string.IsNullOrEmpty(this.ResponseText))
                 await App.Current.MainPage.DisplayAlert("Error", "Nothing to share", "Accept");
             else
             {
@@ -134,7 +148,7 @@ namespace XamarinPO.ViewModel.Application
             else
             {
                 ResponseText = await TestRequest();
-                ApiStatus = "Request successful";
+                SetRequestStatus();
             }
         }
         #endregion

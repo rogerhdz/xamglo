@@ -48,12 +48,6 @@ namespace XamarinPO.Api.Controllers
             });
             menu.Add(new MenuItem
             {
-                Icon = "ic_menu_settings",
-                Title = "Settings",
-                PageName = "SettingsPage"
-            });
-            menu.Add(new MenuItem
-            {
                 Icon = null,
                 Title = "About Us",
                 PageName = "AboutUsPage"
