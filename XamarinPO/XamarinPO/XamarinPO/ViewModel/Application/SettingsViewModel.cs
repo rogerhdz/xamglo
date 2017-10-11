@@ -46,6 +46,8 @@ namespace XamarinPO.ViewModel.Application
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Result)));
             }
         }
+        public Settings settings { get; set; }
+        private readonly DialogService dialogService;
         #endregion 
 
         #region Attributes
@@ -54,17 +56,15 @@ namespace XamarinPO.ViewModel.Application
         string _serverUrl;
         #endregion
 
-        public Settings settings { get; set; }
-        private readonly DialogService dialogService;
-
+        #region Constructors
         public SettingsViewModel()
         {
             dialogService = new DialogService();
             ServerUrl = ApplicationPropertiesManager.Load<Settings>("ApiServer").ServerUrl;
         }
+        #endregion
 
-        public ICommand SaveCommand => new RelayCommand(Save);
-
+        #region Methods
         private async void Save()
         {
             IsRunning = true;
@@ -93,11 +93,19 @@ namespace XamarinPO.ViewModel.Application
 
             IsRunning = false;
         }
+        #endregion
+
+        #region Commands
+        public ICommand SaveCommand => new RelayCommand(Save);
+        #endregion
     }
 
+    #region HelperClasses
     public class Settings
     {
         public string Id { get; set; }
         public string ServerUrl { get; set; }
     }
+    #endregion
+
 }

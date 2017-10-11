@@ -16,6 +16,7 @@
                    BackgroundColor="{StaticResource BackgroundColor}"
                    Keyboard="Chat"
                    Text="{Binding RequestText, Mode=TwoWay}"></Entry>
+                <Button Text="Timeout" Command="{Binding SendTimeoutCommand}"></Button>
                 <Button Text="Send" Command="{Binding SendRequestCommand}"></Button>
                 <Label Text="Api Status"></Label>
                 <Label VerticalOptions="Center" 

@@ -84,6 +84,52 @@ namespace XamarinPO.Helpers
             return result;
         }
 
+        public async Task<HttpManagerResult<T>> HttpJsonGet(HttpManagerConfiguration configuration)
+        {
+            var result = new HttpManagerResult<T>();
+            var client = new HttpClient();
+            HttpResponseMessage response = new HttpResponseMessage();
+            string resultMessage = string.Empty;
+
+            client.BaseAddress = new Uri(configuration.Server);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            try
+            {
+                // HTTP GET
+                response = await client.GetAsync(configuration.Method);
+                resultMessage = response.ToString();
+
+                result.Success = response.IsSuccessStatusCode;
+                result.ObjectResult = null;
+                result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.ObjectResult = ex.InnerException;
+                result.Message = "Request Failed";
+                return result;
+            }
+
+            //try
+            //{
+            //    resultMessage = await response.Content.ReadAsStringAsync();
+
+            //    T complexResulObject = JsonConvert.DeserializeObject<T>(resultMessage);
+            //    result.Success = response.IsSuccessStatusCode;
+            //    result.ObjectResult = complexResulObject;
+            //    result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
+            //}
+            //catch (Exception ex)
+            //{
+            //    result.Success = false;
+            //    result.ObjectResult = ex.InnerException;
+            //    result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
+            //}
+            return result;
+        }
+
         /// <summary>
         /// Generates a Get call to api receiving a configuration object 
         /// </summary>

@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
+using System.Threading;
+using System.Web;
 using System.Web.Http;
+using System.Web.Http.Results;
+using System.Web.Mvc;
+using XamarinPO.Api.Extensions;
 
 namespace XamarinPO.Api.Controllers
 {
@@ -18,7 +20,15 @@ namespace XamarinPO.Api.Controllers
         [HttpPost]
         public IHttpActionResult TestRequest([FromBody]string value)
         {
-            return Ok(string.Format("Api Response is: {0} at {1}", value, DateTime.Now.ToString("dd/MM/yyyy mm:ss")));
+            return Ok($"Api Response is: {value} at {DateTime.Now:dd/MM/yyyy mm:ss}");
+        }
+
+        [HttpGet]
+        [TimeoutFilter(3000)]
+        public IHttpActionResult TestTimeout()
+        {
+            Thread.Sleep(5000);
+            return Ok("no timeout");
         }
     }
 }

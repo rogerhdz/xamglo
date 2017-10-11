@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using XamarinPO.Api.Models;
 
@@ -18,13 +15,13 @@ namespace XamarinPO.Api.Controllers
             {
                 orders.Add(new Order
                 {
-                    Client = string.Format("Client {0}", i),
-                    Description = string.Format("Description Order {0}", i),
-                    DeliveryInformation = string.Format("Delivery Information Order {0}", i),
+                    Client = $"Client {i}",
+                    Description = $"Description Order {i}",
+                    DeliveryInformation = $"Delivery Information Order {i}",
                     Id = i,
                     CreationDate = DateTime.Now.AddDays(i),
                     DeliveryDate = DateTime.Now.AddDays(5 + i),
-                    Title = string.Format("Order's Title {0}", i)
+                    Title = $"Order's Title {i}"
                 });
             }
             return orders;
