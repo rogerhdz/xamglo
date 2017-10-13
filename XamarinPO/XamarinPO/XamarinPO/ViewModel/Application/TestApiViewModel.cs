@@ -17,55 +17,41 @@ namespace XamarinPO.ViewModel.Application
         #endregion
 
         #region Attributes
-        string _requestText;
-        string _responseText;
-        string _apiStatus;
+
+        private string _requestText;
+        private string _responseText;
+        private string _apiStatus;
         #endregion
 
         #region Properties
         public string RequestText
         {
-            get
-            {
-                return _requestText;
-            }
+            get => _requestText;
             set
             {
-                if (_requestText != value)
-                {
-                    _requestText = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RequestText)));
-                }
+                if (_requestText == value) return;
+                _requestText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RequestText)));
             }
         }
         public string ResponseText
         {
-            get
-            {
-                return _responseText;
-            }
+            get => _responseText;
             set
             {
-                if (_responseText != value)
-                {
-                    _responseText = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ResponseText)));
-                }
+                if (_responseText == value) return;
+                _responseText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ResponseText)));
             }
         }
         public string ApiStatus
         {
-            get
-            {
-                return _apiStatus;
-            }
+            get => _apiStatus;
             set
             {
-                if (_apiStatus != value)
-                {
-                    _apiStatus = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ApiStatus)));
-                }
+                if (_apiStatus == value) return;
+                _apiStatus = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ApiStatus)));
             }
         }
         public HttpManagerConfiguration ManagerConfiguration { get; set; }
@@ -88,7 +74,8 @@ namespace XamarinPO.ViewModel.Application
         #endregion
 
         #region Methods
-        async void TestConnection()
+
+        private async void TestConnection()
         {
             ManagerConfiguration.Method = "/api/testapi/testconnection";
             ApiStatus = await PostAsync(string.Empty);
@@ -105,12 +92,18 @@ namespace XamarinPO.ViewModel.Application
             return await PostAsync(RequestText);
         }
 
+        private async void TestTimeout()
+        {
+            ManagerConfiguration.Method = "/api/testapi/testtimeout";
+            ApiStatus = await GetAsync();
+        }
+
         private async Task<string> PostAsync(string postDataString)
         {
             try
             {
                 var manager = new HttpManager<string>();
-                var stringContent = new StringContent(string.Format(@"""{0}""", postDataString), System.Text.Encoding.UTF8, "application/json");
+                var stringContent = new StringContent($@"""{postDataString}""", System.Text.Encoding.UTF8, "application/json");
                 Result = await manager.HttpJsonPost(ManagerConfiguration, stringContent);
             }
             catch (Exception ex)
@@ -119,32 +112,42 @@ namespace XamarinPO.ViewModel.Application
             }
             return Result.ObjectResult.ToString();
         }
+
+        private async Task<string> GetAsync()
+        {
+            try
+            {
+                var manager = new HttpManager<string>();
+                Result = await manager.HttpJsonGet(ManagerConfiguration);
+            }
+            catch (Exception ex)
+            {
+                ApiStatus = ex.Message;
+            }
+            return Result.ObjectResult.ToString();
+        }
+
+        
         #endregion
 
         #region Commands
 
-        public ICommand Share
+        public ICommand Share => new RelayCommand(ShareCommand);
+        public ICommand SendRequestCommand => new RelayCommand(SendRequest);
+        public ICommand SendTimeoutCommand => new RelayCommand(TestTimeout);
+        private async void ShareCommand()
         {
-            get { return new RelayCommand(ShareCommand); }
-        }
-        public ICommand SendRequestCommand
-        {
-            get { return new RelayCommand(SendRequest); }
-        }
-
-        async void ShareCommand()
-        {
-            if (string.IsNullOrEmpty(this.ResponseText))
-                await App.Current.MainPage.DisplayAlert("Error", "Nothing to share", "Accept");
+            if (string.IsNullOrEmpty(ResponseText))
+                await Xamarin.Forms.Application.Current.MainPage.DisplayAlert("Error", "Nothing to share", "Accept");
             else
             {
-                MessagingCenter.Send<string>(this.ResponseText, "Share");
+                MessagingCenter.Send(ResponseText, "Share");
             }
         }
-        async void SendRequest()
+        private async void SendRequest()
         {
             if (string.IsNullOrEmpty(RequestText))
-                await App.Current.MainPage.DisplayAlert("Error", "You must enter a value in Request Text", "Accept");
+                await Xamarin.Forms.Application.Current.MainPage.DisplayAlert("Error", "You must enter a value in Request Text", "Accept");
             else
             {
                 ResponseText = await TestRequest();
