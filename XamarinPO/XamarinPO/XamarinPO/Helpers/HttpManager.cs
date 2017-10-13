@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using XamarinPO.Extensions;
 
 namespace XamarinPO.Helpers
 {
@@ -19,14 +20,14 @@ namespace XamarinPO.Helpers
         /// </summary>
         /// <param name="configuration">Location of api method to consume</param>
         /// <returns> HttpManagerResult<T/> object with a list of required items, success flag and message</returns>
-        public async Task<HttpManagerResult<T>> HttpGetList(HttpManagerConfiguration configuration)
+        public async Task<HttpManagerResult> HttpGetList(HttpManagerConfiguration configuration)
         {
-            var result = new HttpManagerResult<T>();
+            var result = new HttpManagerResult();
             var client = new HttpClient();
-            client.BaseAddress = new Uri(configuration.Server);
 
             try
             {
+                client.BaseAddress = new Uri(configuration.Server);
                 var response = await client.GetAsync(configuration.Method);
                 var jsonResult = await response.Content.ReadAsStringAsync();
 
@@ -45,64 +46,24 @@ namespace XamarinPO.Helpers
 
 
 
-        public async Task<HttpManagerResult<T>> HttpJsonPost(HttpManagerConfiguration configuration, HttpContent content)
+        public async Task<HttpManagerResult> HttpJsonPost(HttpManagerConfiguration configuration, HttpContent content)
         {
-            var result = new HttpManagerResult<T>();
+            var result = new HttpManagerResult();
             var client = new HttpClient();
-            HttpResponseMessage response = new HttpResponseMessage();
+            HttpResponseMessage response;
             string resultMessage = string.Empty;
+
             try
-            {                
+            {
                 client.BaseAddress = new Uri(configuration.Server);
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
                 // HTTP POST
-                try
-                {
-                    response = await client.PostAsync(configuration.Method, content);
-                }
-                catch (Exception ex)
-                {
-                    result.Success = false;
-                    result.ObjectResult = ex.InnerException;
-                    result.Message = "Request Failed";
-                    return result;
-                }
-                resultMessage = await response.Content.ReadAsStringAsync();
-
-                T complexResulObject = JsonConvert.DeserializeObject<T>(resultMessage);
-                result.Success = response.IsSuccessStatusCode;
-                result.ObjectResult = complexResulObject;
-                result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
+                response = await client.PostAsync(configuration.Method, content);
             }
             catch (Exception ex)
             {
                 result.Success = false;
-                result.ObjectResult = ex.InnerException;
-                result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
-            }
-            return result;
-        }
-
-        public async Task<HttpManagerResult<T>> HttpJsonGet(HttpManagerConfiguration configuration)
-        {
-            var result = new HttpManagerResult<T>();
-            var client = new HttpClient();
-            HttpResponseMessage response = new HttpResponseMessage();
-            string resultMessage = string.Empty;
-
-            client.BaseAddress = new Uri(configuration.Server);
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            try
-            {
-                // HTTP GET
-                response = await client.GetAsync(configuration.Method);
-            }
-            catch (Exception ex)
-            {
-                result.Success = false;
-                result.ObjectResult = ex.InnerException;
+                result.ObjectResult = ex.MessagePlusInner();
                 result.Message = "Request Failed";
                 return result;
             }
@@ -119,7 +80,47 @@ namespace XamarinPO.Helpers
             catch (Exception ex)
             {
                 result.Success = false;
-                result.ObjectResult = ex.InnerException;
+                result.ObjectResult = ex.MessagePlusInner();
+                result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
+            }
+            return result;
+        }
+
+        public async Task<HttpManagerResult> HttpJsonGet(HttpManagerConfiguration configuration)
+        {
+            var result = new HttpManagerResult();
+            var client = new HttpClient();
+            HttpResponseMessage response;
+            string resultMessage = string.Empty;
+            try
+            {
+                client.BaseAddress = new Uri(configuration.Server);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                // HTTP GET
+                response = await client.GetAsync(configuration.Method);
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.ObjectResult = ex.MessagePlusInner();
+                result.Message = "Request Failed";
+                return result;
+            }
+
+            try
+            {
+                resultMessage = await response.Content.ReadAsStringAsync();
+
+                T complexResulObject = JsonConvert.DeserializeObject<T>(resultMessage);
+                result.Success = response.IsSuccessStatusCode;
+                result.ObjectResult = complexResulObject;
+                result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.ObjectResult = ex.MessagePlusInner();
                 result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
             }
             return result;
@@ -130,14 +131,15 @@ namespace XamarinPO.Helpers
         /// </summary>
         /// <param name="configuration">Location of api method to consume</param>
         /// <returns> HttpManagerResult<T/> object with a list of required items, success flag and message</returns>
-        public async Task<HttpManagerResult<T>> HttpGetAzureList(HttpManagerConfiguration configuration)
+        public async Task<HttpManagerResult> HttpGetAzureList(HttpManagerConfiguration configuration)
         {
-            var result = new HttpManagerResult<T>();
+            var result = new HttpManagerResult();
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("ZUMO-API-VERSION", "2.0.0");
-            client.BaseAddress = new Uri(configuration.Server);
+
             try
             {
+                client.DefaultRequestHeaders.Add("ZUMO-API-VERSION", "2.0.0");
+                client.BaseAddress = new Uri(configuration.Server);
                 var response = await client.GetAsync(configuration.Method);
                 var jsonResult = await response.Content.ReadAsStringAsync();
 
@@ -161,14 +163,15 @@ namespace XamarinPO.Helpers
         /// <param name="configuration">Location of api method to consume</param>
         /// <param name="objectToUpdate">Object to send to api</param>
         /// <returns> HttpManagerResult<T/> object with a list of required items, success flag and message</returns>
-        public async Task<HttpManagerResult<T>> HttpPatchAzure(HttpManagerConfiguration configuration, T objectToUpdate)
+        public async Task<HttpManagerResult> HttpPatchAzure(HttpManagerConfiguration configuration, T objectToUpdate)
         {
-            var result = new HttpManagerResult<T>();
+            var result = new HttpManagerResult();
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("ZUMO-API-VERSION", "2.0.0");
-            client.BaseAddress = new Uri(configuration.Server);
+
             try
             {
+                client.DefaultRequestHeaders.Add("ZUMO-API-VERSION", "2.0.0");
+                client.BaseAddress = new Uri(configuration.Server);
                 var request = new HttpRequestMessage(new HttpMethod("PATCH"), configuration.Method)
                 {
                     Content = new StringContent(LowercaseJsonSerializer.SerializeObject(objectToUpdate), Encoding.UTF8, "application/json")
@@ -191,14 +194,15 @@ namespace XamarinPO.Helpers
             return result;
         }
 
-        public async Task<HttpManagerResult<T>> HttpGetAzureTuple(HttpManagerConfiguration configuration)
+        public async Task<HttpManagerResult> HttpGetAzureTuple(HttpManagerConfiguration configuration)
         {
-            var result = new HttpManagerResult<T>();
+            var result = new HttpManagerResult();
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("ZUMO-API-VERSION", "2.0.0");
-            client.BaseAddress = new Uri(configuration.Server);
+
             try
             {
+                client.DefaultRequestHeaders.Add("ZUMO-API-VERSION", "2.0.0");
+                client.BaseAddress = new Uri(configuration.Server);
                 var response = await client.GetAsync(configuration.Method);
                 var jsonResult = await response.Content.ReadAsStringAsync();
 
@@ -224,7 +228,7 @@ namespace XamarinPO.Helpers
         public string Method { get; set; }
     }
 
-    public class HttpManagerResult<T>
+    public class HttpManagerResult
     {
         public object ObjectResult { get; set; }
         public bool Success { get; set; }

@@ -55,7 +55,7 @@ namespace XamarinPO.ViewModel.Application
             }
         }
         public HttpManagerConfiguration ManagerConfiguration { get; set; }
-        public HttpManagerResult<string> Result { get; set; }
+        public HttpManagerResult Result { get; set; }
         public DialogService DialogService { get; set; }
         #endregion
 
@@ -110,7 +110,7 @@ namespace XamarinPO.ViewModel.Application
             {
                 ApiStatus = ex.Message;
             }
-            return Result.ObjectResult.ToString();
+            return Result.ObjectResult?.ToString();
         }
 
         private async Task<string> GetAsync()
@@ -124,7 +124,7 @@ namespace XamarinPO.ViewModel.Application
             {
                 ApiStatus = ex.Message;
             }
-            return Result.ObjectResult.ToString();
+            return Result.ObjectResult?.ToString();
         }
 
         

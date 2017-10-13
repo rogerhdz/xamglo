@@ -91,6 +91,7 @@ namespace XamarinPO.ViewModel
 
         async Task GetApiUrl()
         {
+            Settings settingsObj = new Settings();
             //Instance result observable list
             IsRunning = true;
             Result = "Loading Settings";
@@ -104,16 +105,17 @@ namespace XamarinPO.ViewModel
             //Create manager
             var manager = new HttpManager<Settings>();
             //Get object with items, isSuccess and message
-            HttpManagerResult<Settings> result = await manager.HttpGetAzureList(config);
+            HttpManagerResult result = await manager.HttpGetAzureList(config);
             Result = result.Message;
-            var settingsObj = ((List<Settings>)result.ObjectResult)[0];
-            if (!result.Success)
+
+            if (result.Success)
             {
-                settingsObj.ServerUrl = "Error ocurred";
+                settingsObj = ((List<Settings>) result.ObjectResult)[0];
+                await ApplicationPropertiesManager.Save("ApiServer", settingsObj);
             }
             else
             {
-                await ApplicationPropertiesManager.Save("ApiServer", settingsObj);
+                settingsObj.ServerUrl = "Error ocurred";
             }
             IsRunning = false;
         }
@@ -139,7 +141,7 @@ namespace XamarinPO.ViewModel
             //Create manager
             var manager = new HttpManager<OrderViewModel>();
             //Get object with items, isSuccess and message
-            HttpManagerResult<OrderViewModel> result = await manager.HttpGetList(config);
+            HttpManagerResult result = await manager.HttpGetList(config);
             Result = result.Message;
             if (result.Success)
             {
@@ -166,7 +168,7 @@ namespace XamarinPO.ViewModel
             //Create manager
             var manager = new HttpManager<MenuItemViewModel>();
             //Get object with items, isSuccess and message
-            HttpManagerResult<MenuItemViewModel> result = await manager.HttpGetList(config);
+            HttpManagerResult result = await manager.HttpGetList(config);
             Result = result.Message;
             if (result.Success)
             {

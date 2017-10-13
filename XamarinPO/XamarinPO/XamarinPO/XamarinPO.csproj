@@ -38,6 +38,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\ExceptionExtension.cs" />
     <Compile Include="Helpers\HttpManager.cs" />
     <Compile Include="Helpers\LowerCaseJsonSerializer.cs" />
     <Compile Include="Helpers\ApplicationPropertiesManager.cs" />

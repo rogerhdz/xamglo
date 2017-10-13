@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace XamarinPO.Helpers
@@ -13,7 +14,16 @@ namespace XamarinPO.Helpers
 
         public static T Load<T>(string key)
         {
-            return (T)Application.Current.Properties[key];
+            T propertyValue;
+            try
+            {
+                 propertyValue= (T)Application.Current.Properties[key];
+            }
+            catch (Exception)
+            {
+                propertyValue = (T)Activator.CreateInstance(typeof(T));
+            }
+            return propertyValue;
         }
 
         public static void ClearAll()

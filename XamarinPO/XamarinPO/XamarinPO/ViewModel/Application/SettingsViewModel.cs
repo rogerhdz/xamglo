@@ -81,7 +81,7 @@ namespace XamarinPO.ViewModel.Application
                 Server = ConfigurationManager.AppSettings["SettingsServer"]
             };
             var manager = new HttpManager<Settings>();
-            HttpManagerResult<Settings> result = await manager.HttpPatchAzure(config, settingsObj);
+            HttpManagerResult result = await manager.HttpPatchAzure(config, settingsObj);
             Result = result.Message;
             if (result.Success)
             {

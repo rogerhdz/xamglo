@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Foundation;
+﻿using Foundation;
 using PCLAppConfig;
 using UIKit;
 using Xamarin.Forms;
-using Xamarin.Forms.Platform.iOS;
 
 namespace XamarinPO.iOS
 {
@@ -29,14 +24,14 @@ namespace XamarinPO.iOS
             ConfigurationManager.Initialise(PCLAppConfig.FileSystemStream.PortableStream.Current);
             LoadApplication(new App());
 
-            MessagingCenter.Subscribe<string>(this, "Share", Share, null);
+            MessagingCenter.Subscribe<string>(this, "Share", Share);
 
             return base.FinishedLaunching(app, options);
         }
 
-        async void Share(string Message)
+        void Share(string Message)
         {
-            var item = NSObject.FromObject(Message);
+            var item = FromObject(Message);
             var activityItems = new[] { item };
             var activityController = new UIActivityViewController(activityItems, null);
 
