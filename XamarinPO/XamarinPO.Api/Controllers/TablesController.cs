@@ -27,34 +27,53 @@ namespace XamarinPO.Api.Controllers
             return orders;
         }
 
-        [AcceptVerbs("Get")]
-        public IEnumerable<MenuItem> Menu()
+        [HttpGet]
+        public IEnumerable<MenuItem> Menu([FromUri]string lang="en")
         {
             var menu = new List<MenuItem>();
-            menu.Add(new MenuItem
+
+            if (lang?.ToLower() == "es")
             {
-                Icon = "ic_menu_orders",
-                Title = "Orders",
-                PageName = "NewOrder"
-            });
-            menu.Add(new MenuItem
+                menu.Add(new MenuItem
+                {
+                    Icon = "ic_menu_orders",
+                    Title = "Órdenes",
+                    PageName = "NewOrder"
+                });
+                menu.Add(new MenuItem
+                {
+                    Icon = "ic_menu_client",
+                    Title = "Clientes",
+                    PageName = "ClientPage"
+                });
+                menu.Add(new MenuItem
+                {
+                    Icon = "ic_aboutus",
+                    Title = "Acerca de",
+                    PageName = "AboutUsPage"
+                });
+            }
+            else
             {
-                Icon = "ic_menu_client",
-                Title = "Clients",
-                PageName = "ClientPage"
-            });
-            menu.Add(new MenuItem
-            {
-                Icon = null,
-                Title = "About Us",
-                PageName = "AboutUsPage"
-            });
-            menu.Add(new MenuItem
-            {
-                Icon = null,
-                Title = "Close",
-                PageName = "CloseApp"
-            });
+                menu.Add(new MenuItem
+                {
+                    Icon = "ic_menu_orders",
+                    Title = "Orders",
+                    PageName = "NewOrder"
+                });
+                menu.Add(new MenuItem
+                {
+                    Icon = "ic_menu_client",
+                    Title = "Clients",
+                    PageName = "ClientPage"
+                });
+                menu.Add(new MenuItem
+                {
+                    Icon = "ic_aboutus",
+                    Title = "About Us",
+                    PageName = "AboutUsPage"
+                });
+            }
             return menu;
         }
     }

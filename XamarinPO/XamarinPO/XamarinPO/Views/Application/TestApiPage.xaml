@@ -16,8 +16,19 @@
                    BackgroundColor="{StaticResource BackgroundColor}"
                    Keyboard="Chat"
                    Text="{Binding RequestText, Mode=TwoWay}"></Entry>
-                <Button Text="Timeout" Command="{Binding SendTimeoutCommand}"></Button>
-                <Button Text="Send" Command="{Binding SendRequestCommand}"></Button>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Grid.Row="0" Text="Timeout" Command="{Binding SendTimeoutCommand}"></Button>
+                    <Button Grid.Column="1" Grid.Row="0" Text="Send" Command="{Binding SendRequestCommand}"></Button>
+                </Grid>
+                
+               
                 <Label Text="Api Status"></Label>
                 <Label VerticalOptions="Center" 
                    BackgroundColor="{StaticResource AccentColor2}"

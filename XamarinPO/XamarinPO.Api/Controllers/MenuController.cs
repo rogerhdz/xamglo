@@ -23,15 +23,9 @@ namespace XamarinPO.Api.Controllers
             });
             menu.Add(new MenuItem
             {
-                Icon = null,
+                Icon = "ic_aboutus",
                 Title = "About Us",
                 PageName = "AboutUsPage"
-            });
-            menu.Add(new MenuItem
-            {
-                Icon = null,
-                Title = "Close",
-                PageName = "CloseApp"
             });
             return menu;
         }

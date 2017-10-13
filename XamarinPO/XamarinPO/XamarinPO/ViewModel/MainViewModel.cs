@@ -145,6 +145,7 @@ namespace XamarinPO.ViewModel
             Result = result.Message;
             if (result.Success)
             {
+                Orders.Clear();
                 Orders.AddRange((List<OrderViewModel>)result.ObjectResult);
             }
 
@@ -162,7 +163,7 @@ namespace XamarinPO.ViewModel
             //Create configurator to know consume api
             var config = new HttpManagerConfiguration
             {
-                Method = "api/tables/menu",
+                Method = "api/tables/menu?lang="+Languages.GetCulture(),
                 Server = ApplicationPropertiesManager.Load<Settings>("ApiServer").ServerUrl
             };
             //Create manager
@@ -172,19 +173,26 @@ namespace XamarinPO.ViewModel
             Result = result.Message;
             if (result.Success)
             {
+                Menu.Clear();
                 Menu.AddRange((List<MenuItemViewModel>)result.ObjectResult);
             }
             Menu.Add(new MenuItemViewModel
             {
                 Icon = "ic_menu_settings",
-                Title = "Settings",
+                Title = Languages.Settings,
                 PageName = "SettingsPage"
             });
             Menu.Add(new MenuItemViewModel
             {
-                Icon = "ic_menu_testapi",
-                Title = "Test Api",
+                Icon = "ic_testapi",
+                Title = Languages.TestApi,
                 PageName = "TestApiPage"
+            });
+            Menu.Add(new MenuItemViewModel
+            {
+                Icon = "ic_power",
+                Title = Languages.Close,
+                PageName = "CloseApp"
             });
             IsRunning = false;
         }
