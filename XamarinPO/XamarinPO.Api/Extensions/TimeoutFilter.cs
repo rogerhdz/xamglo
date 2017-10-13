@@ -42,12 +42,14 @@ namespace XamarinPO.Api.Extensions
             if (finishedTask == timeout)
             {
                 tokenSource.Cancel();
-                actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.RequestTimeout);
+
+                var auxResponse = actionContext.Request.CreateResponse(HttpStatusCode.RequestTimeout);
+                actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.RequestTimeout, auxResponse.ReasonPhrase);
             }
-            //else
-            //{
-            //    actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.OK, result);
-            //}
+            else
+            {
+                actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.OK, result);
+            }
         }
 
         private async Task TimeoutTask(int timeoutValue)

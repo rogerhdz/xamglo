@@ -98,11 +98,6 @@ namespace XamarinPO.Helpers
             {
                 // HTTP GET
                 response = await client.GetAsync(configuration.Method);
-                resultMessage = response.ToString();
-
-                result.Success = response.IsSuccessStatusCode;
-                result.ObjectResult = null;
-                result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
             }
             catch (Exception ex)
             {
@@ -112,21 +107,21 @@ namespace XamarinPO.Helpers
                 return result;
             }
 
-            //try
-            //{
-            //    resultMessage = await response.Content.ReadAsStringAsync();
+            try
+            {
+                resultMessage = await response.Content.ReadAsStringAsync();
 
-            //    T complexResulObject = JsonConvert.DeserializeObject<T>(resultMessage);
-            //    result.Success = response.IsSuccessStatusCode;
-            //    result.ObjectResult = complexResulObject;
-            //    result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
-            //}
-            //catch (Exception ex)
-            //{
-            //    result.Success = false;
-            //    result.ObjectResult = ex.InnerException;
-            //    result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
-            //}
+                T complexResulObject = JsonConvert.DeserializeObject<T>(resultMessage);
+                result.Success = response.IsSuccessStatusCode;
+                result.ObjectResult = complexResulObject;
+                result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.ObjectResult = ex.InnerException;
+                result.Message = response.IsSuccessStatusCode ? "Success" : resultMessage;
+            }
             return result;
         }
 

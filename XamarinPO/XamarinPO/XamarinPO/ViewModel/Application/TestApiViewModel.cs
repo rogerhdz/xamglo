@@ -124,7 +124,7 @@ namespace XamarinPO.ViewModel.Application
             {
                 ApiStatus = ex.Message;
             }
-            return Result.Message;
+            return Result.ObjectResult.ToString();
         }
 
         

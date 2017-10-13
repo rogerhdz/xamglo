@@ -25,10 +25,10 @@ namespace XamarinPO.Api.Controllers
 
         [HttpGet]
         [TimeoutFilter(3000)]
-        public IHttpActionResult TestTimeout()
+        public string TestTimeout()
         {
             Thread.Sleep(5000);
-            return Ok("no timeout");
+            return "no timeout";
         }
     }
 }
