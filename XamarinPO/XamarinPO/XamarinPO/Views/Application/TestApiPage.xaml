@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:LocalBehaviors="clr-namespace:XamarinPO.Behaviors"
              x:Class="XamarinPO.Views.Application.TestApiPage"
              Title="Test Api Connection">
 
@@ -15,7 +16,11 @@
                 <Entry TextColor="{StaticResource FontColor}"
                    BackgroundColor="{StaticResource BackgroundColor}"
                    Keyboard="Chat"
-                   Text="{Binding RequestText, Mode=TwoWay}"></Entry>
+                   Text="{Binding RequestText, Mode=TwoWay}">
+                    <Entry.Behaviors>
+                        <LocalBehaviors:EntryLengthValidatorBehavior MaxLength="50"/>
+                    </Entry.Behaviors>
+                </Entry>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"></RowDefinition>
@@ -27,8 +32,8 @@
                     <Button Grid.Column="0" Grid.Row="0" Text="Timeout" Command="{Binding SendTimeoutCommand}"></Button>
                     <Button Grid.Column="1" Grid.Row="0" Text="Send" Command="{Binding SendRequestCommand}"></Button>
                 </Grid>
-                
-               
+
+
                 <Label Text="Api Status"></Label>
                 <Label VerticalOptions="Center" 
                    BackgroundColor="{StaticResource AccentColor2}"
