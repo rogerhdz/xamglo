@@ -17,7 +17,7 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
     <AndroidStoreUncompressedFileExtensions />
     <MandroidI18n />
     <JavaMaximumHeapSize />
@@ -161,7 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XamarinPO\XamarinPO.csproj">
-      <Project>{5927ebd5-c308-4b9b-ba43-ca7262ede766}</Project>
+      <Project>{31DD2A50-A7D3-4DB1-9078-863E02B8FC64}</Project>
       <Name>XamarinPO</Name>
     </ProjectReference>
   </ItemGroup>
